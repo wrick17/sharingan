@@ -11,8 +11,7 @@ if ('serviceWorker' in navigator) {
 var CACHE_NAME = 'cache-v1';
 var urlsToCache = [
   '/',
-  '/style.css',
-  '/script.js'
+  '/bundle.js'
 ];
 
 self.addEventListener('install', function(event) {
