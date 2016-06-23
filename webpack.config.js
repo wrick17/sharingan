@@ -2,18 +2,20 @@ var path = require('path');
 var webpack = require('webpack');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
+const banner = ''+Date.now();
+
 module.exports = {
-  entry: [
-    "./index.js"
-  ],
+  entry: {
+    bundle: "./index.jsx"
+  },
   output: {
     path: __dirname,
-    filename: "bundle.js"
+    filename: "[name].js"
   },
   module: {
     loaders: [
       {
-        test: /\.js?$/,
+        test: /\.jsx$/,
         exclude: /(node_modules|bower_components)/,
         loaders: ['react-hot', 'babel-loader']
       },
@@ -23,11 +25,8 @@ module.exports = {
       },
     ]
   },
-  // plugins: [new ExtractTextPlugin("style.css", {allChunks: false})],
+  plugins: [new webpack.BannerPlugin(banner)],
   devServer: {
     stats: 'warnings-only',
   }
 };
-
-
-// loader: ExtractTextPlugin.extract("style-loader!css-loader?localIdentName=[path][name]__[hash:base64:5]__[local]!less-loader")

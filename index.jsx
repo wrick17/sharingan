@@ -1,6 +1,6 @@
 import React  from 'react'
 import ReactDOM  from 'react-dom'
-import Dummy  from './app/App.js'
+import Dummy  from './app/App.jsx'
 
 ReactDOM.render(
   <Dummy />,
