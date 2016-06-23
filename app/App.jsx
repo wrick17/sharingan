@@ -1,13 +1,12 @@
-var style = require("./app.less")
-console.log(style);
+var style = require("./app.less");
 
-import React  from 'react';
+import React  from 'react'
 
-export default class App extends React.Component {
+class App extends React.Component {
   render() {
     return (
       <div className={style['page-name']}>
-        <div>Webpack is doing its thing with React and ES2015 oh?
+        <div>Webpack is doing its thing with React and ES2015 oh nah?
           <h1 className="bold">You</h1>
         </div>
       </div>

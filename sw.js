@@ -8,7 +8,7 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-var CACHE_NAME = Date.now();
+var CACHE_NAME = 'v1';
 var urlsToCache = [
   '/',
   '/bundle.js'
