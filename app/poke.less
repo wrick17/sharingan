@@ -1,0 +1,36 @@
+@import "variables.less";
+
+.poke-list {
+  list-style: none;
+  padding-left: 0;
+  display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+}
+
+.pokemon {
+  @card-color: darken(@base, 2%);
+  margin: 5px;
+  min-height: 200px;
+  padding-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 0 0 190px;
+  max-width: 45%;
+  background: @card-color;
+  border-top: 1px solid lighten(@card-color, 15%);
+  border-left: 1px solid darken(@card-color, 3%);
+  border-right: 1px solid darken(@card-color, 3%);
+  border-bottom: 1px solid darken(@card-color, 15%);
+}
+
+.poke-img {
+  width: 100%;
+}
+
+.poke-name {
+  font-weight: bold;
+  text-transform: capitalize;
+  color: @alternate;
+}

@@ -1,21 +1,17 @@
-:local(.page-name) {
-  color: red;
-  .bold {
-    color: green;
-  }
+@import "variables.less";
 
-  @media (max-width: 768px) {
-    .bold {
-      color: blue;
-    }
-  }
+* {
+  font-family: sans-serif;
+  box-sizing: border-box;
 }
 
+body {
+  margin: 0;
+}
 
-
-:local(.dummy) {
-  .bold {
-    font-size: 92px;
-    color: orange;
-  }
+.poke {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: @background;
 }
