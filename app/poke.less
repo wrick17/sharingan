@@ -27,6 +27,14 @@
 
 .poke-img {
   width: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  &:after {
+    content: "";
+    display: block;
+    padding-bottom: 100%;
+  }
 }
 
 .poke-name {
