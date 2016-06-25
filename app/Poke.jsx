@@ -25,7 +25,7 @@ export default class Poke extends React.Component {
         // return;
       }
 
-      superagent.get(URL.ALL_POKEMONS).then((res) => { //?limit=1000
+      superagent.get(URL.ALL_POKEMONS).then((res) => {
         var myWorker = new Worker("worker.js");
         myWorker.postMessage(res.body.results);
         myWorker.onmessage = (e) => {
