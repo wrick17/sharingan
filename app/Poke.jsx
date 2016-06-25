@@ -17,15 +17,14 @@ export default class Poke extends React.Component {
   componentDidMount() {
     localforage.getItem('pokemon').then((value) => {
       if (value) {
-        console.log('value found');
         this.setState({
           pokemons: value,
           loading: false
-        })
-        return;
+        });
+        // return;
       }
 
-      superagent.get('http://pokeapi.co/api/v2/pokemon/?limit=1000').then((res) => {
+      superagent.get('http://pokeapi.co/api/v2/pokemon').then((res) => { //?limit=1000
         var myWorker = new Worker("worker.js");
         myWorker.postMessage(res.body.results);
         myWorker.onmessage = (e) => {
