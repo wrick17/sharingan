@@ -9,8 +9,7 @@ module.exports = {
     bundle: "./index.jsx"
   },
   output: {
-    path: __dirname,
-    publicPath: "/dist/",
+    path: path.join(__dirname, 'dist'),
     filename: "[name].js"
   },
   module: {
@@ -22,16 +21,21 @@ module.exports = {
       },
       {
         test: /\.less$/,
-        loader: "style-loader!css-loader!postcss-loader!less-loader"
+        loader: ExtractTextPlugin.extract("style-loader", "css-loader!postcss-loader!less-loader")
       }
     ],
   },
   postcss: [ autoprefixer({ browsers: ['last 3 versions', '> 1%'] }) ],
   plugins: [
     new webpack.BannerPlugin(banner),
-    new ExtractTextPlugin("style.css")
+    new ExtractTextPlugin("style.css"),
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify('production')
+      }
+    })
   ],
-  devtool: 'eval',
+  devtool: 'cheap-module-source-map',
   devServer: {
     stats: 'warnings-only',
   }

@@ -5,6 +5,7 @@ import superagent from 'superagent'
 import localforage  from 'localforage'
 import Pokemon  from './Pokemon.jsx'
 import Loader  from './Loader.jsx'
+import URL from './config.jsx'
 
 export default class Poke extends React.Component {
   constructor(props) {
@@ -24,7 +25,7 @@ export default class Poke extends React.Component {
         // return;
       }
 
-      superagent.get('http://pokeapi.co/api/v2/pokemon').then((res) => { //?limit=1000
+      superagent.get(URL.ALL_POKEMONS).then((res) => { //?limit=1000
         var myWorker = new Worker("worker.js");
         myWorker.postMessage(res.body.results);
         myWorker.onmessage = (e) => {
