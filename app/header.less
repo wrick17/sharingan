@@ -4,11 +4,83 @@
   position: fixed;
   display: flex;
   justify-content: center;
+  align-items: center;
   font-weight: bold;
   width: 100%;
   background-color: @primary;
   color: @base;
-  padding: 20px;
+  padding: 15px;
+  font-size: 18px;
   text-transform: uppercase;
   border-bottom: 1px solid darken(@primary, 15%);
+
+  span {
+    margin-left: 10px;
+  }
+}
+
+.animation-box {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 10px;
+  left: 10px;
+  height: @pokeball-small;
+  width: @pokeball-small;
+  transform: translate(0,0);
+  background: @primary;
+  animation: shift @pokeball-animation-duration;
+  border-radius: 50%;
+  z-index: 1000;
+}
+
+.animation-image {
+  height: @pokeball-small;
+  width: @pokeball-small;
+  animation: shrink @pokeball-animation-duration;
+}
+
+@keyframes shift {
+  0%, 30% {
+    top: 50vh;
+    left: 50vw;
+    height: 200vh;
+    width: 200vh;
+    border-radius: 0;
+    transform: translate(-50%, -50%);
+  }
+  70% {
+    top: 50vh;
+    left: 50vw;
+    height: @pokeball-big;
+    width: @pokeball-big;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+  100% {
+    top: 10px;
+    left: 10px;
+    height: @pokeball-small;
+    width: @pokeball-small;
+    transform: translate(0,0);
+  }
+}
+
+@keyframes shrink {
+  0%, 30% {
+    height: @pokeball-big;
+    width: @pokeball-big;
+    opacity: 0;
+  }
+  70% {
+    height: @pokeball-big;
+    width: @pokeball-big;
+    opacity: 1;
+  }
+  100% {
+    height: @pokeball-small;
+    width: @pokeball-small;
+    opacity: 1;
+  }
 }

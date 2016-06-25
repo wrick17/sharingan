@@ -6,7 +6,10 @@ export default class Header extends React.Component {
   render() {
     return (
       <header className="header">
-        Pokemons
+        <div className="animation-box">
+          <img src="images/icon-192x192.png" className="animation-image" />
+        </div>
+        <span>Pokemons</span>
       </header>
     )
   }
