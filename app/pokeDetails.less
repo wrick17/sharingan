@@ -1,0 +1,59 @@
+@import "./variables.less";
+
+.pokemon-details-wrapper {
+  position: fixed;
+  top: 100%;
+  left: 0;
+  height: 100%;
+  width: 100vw;
+  padding-top: 50px;
+  transition-delay: 300ms;
+  z-index: 1000;
+
+  &.show {
+    top: 0;
+    height: 100%;
+    transition-delay: 0ms;
+
+    .overlay {
+      opacity: 1;
+      transition: 300ms;
+    }
+  }
+
+  .pokemon-details {
+    position: absolute;
+    top: 100%;
+    height: calc(~"100% - 50px");
+    width: 100%;
+    background-color: @base;
+    overflow: auto;
+    transition: 300ms ease-in-out;
+
+    &.show {
+      top: 50px;
+      transition: 300ms ease-in-out;
+    }
+  }
+
+  .back-button {
+    font-size: 14px;
+    padding: 10px;
+    text-transform: uppercase;
+  }
+
+  .poke-img {
+    width: 128px;
+    height: 128px;
+  }
+}
+
+
+.overlay {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  opacity: 0;
+  transition: 300ms;
+}
