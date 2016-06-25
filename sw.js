@@ -8,10 +8,11 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-var CACHE_NAME = 'v1';
+var CACHE_NAME = 'v2';
 var urlsToCache = [
   '/',
-  '/bundle.js',
+  '/dist/style.css',
+  '/dist/bundle.js',
   '/worker.js'
 ];
 

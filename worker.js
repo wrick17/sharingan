@@ -1,15 +1,15 @@
 onmessage = function(e) {
-  const results = e.data;
+  var results = e.data;
 
-  const pokemons = results.map(pokemon => {
+  var pokemons = results.map(function(pokemon) {
 
-    const url = pokemon.url;
-    const match = /https:\/\/pokeapi.co\/api\/v2\/pokemon\/([0-9]{0,})+\//gi.exec(url);
-    const id = match[1];
+    var url = pokemon.url;
+    var match = /https:\/\/pokeapi.co\/api\/v2\/pokemon\/([0-9]{0,})+\//gi.exec(url);
+    var id = match[1];
 
     return {
-      id,
-      url,
+      id: id,
+      url: url,
       name: pokemon.name,
       image: 'https://pokeapi.co/media/sprites/pokemon/' + id + '.png'
     }
