@@ -24,27 +24,84 @@
   .pokemon-details {
     position: absolute;
     top: 100%;
-    height: calc(~"100% - 50px");
+    height: 100%;
     width: 100%;
     background-color: @base;
     overflow: auto;
     transition: 300ms ease-in-out;
 
     &.show {
-      top: 50px;
+      top: 0;
       transition: 300ms ease-in-out;
     }
   }
 
-  .back-button {
-    font-size: 14px;
-    padding: 10px;
+  .close-button {
+    font-size: 12px;
+    font-weight: bold;
     text-transform: uppercase;
+    background-color: transparent;
+    border: none;
+    .cross {
+      margin-left: 5px;
+      font-size: 120%;
+    }
   }
 
   .poke-img {
-    width: 128px;
-    height: 128px;
+    width: 152px;
+    height: 152px;
+    flex: 0 0 152px;
+  }
+
+  .details-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+    padding: 15px;
+    box-shadow: 0 1px 2px fade(@alternate, 10%);
+  }
+
+  .pokemon-name {
+    padding: 0 10px;
+    font-weight: bold;
+    font-size: 16px;
+    text-transform: uppercase;
+  }
+
+  .pokemon-important-info {
+    display: flex;
+  }
+
+  .stats {
+    display: flex;
+    flex: 1;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 10px;
+  }
+
+  .poke-id {
+    // padding: 5px;
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .types {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .type {
+    padding: 5px;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 12px;
+    margin-right: 5px;
+    color: @base;
   }
 }
 

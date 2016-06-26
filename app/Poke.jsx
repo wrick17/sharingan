@@ -6,7 +6,7 @@ import localforage  from 'localforage'
 import Pokemon  from './Pokemon.jsx'
 import PokeDetails  from './PokeDetails.jsx'
 import Loader  from './Loader.jsx'
-import URL from './config.jsx'
+import {URL} from './config.jsx'
 
 export default class Poke extends React.Component {
   constructor(props) {
@@ -14,12 +14,15 @@ export default class Poke extends React.Component {
     this.loadPokemons = this.loadPokemons.bind(this);
     this.loadMore = this.loadMore.bind(this);
     this.pokemonSelected = this.pokemonSelected.bind(this);
+    this.scrapeData = this.scrapeData.bind(this);
+    this.loadPokemon = this.loadPokemon.bind(this);
     this.state = {
       pokemons: [],
       loading: true,
       total: 0,
+      synced: 0,
       last: 0,
-      detailOf: {},
+      pokeDetail: undefined,
       detailOpen: false
     };
   }
@@ -36,6 +39,10 @@ export default class Poke extends React.Component {
       loading: false,
       last: (last + pageSize)
     });
+
+    requestIdleCallback(() => {
+      this.scrapeData(pokemonsList);
+    });
   }
   loadMore() {
     localforage.getItem('pokemon').then(value => {
@@ -45,23 +52,58 @@ export default class Poke extends React.Component {
     });
   }
   pokemonSelected(pokemon) {
-    this.setState({
-      detailOf: pokemon,
-      detailOpen: true
+    this.loadPokemon(pokemon.id);
+  }
+  scrapeData(pokemons) {
+    const totalPokemons = pokemons.length;
+    localforage.keys().then(value => {
+      const pokemonsInCache = value;
+      const pokemonIds = pokemons.map(pokemon => 'poke_'+pokemon.id).filter(pokemon => pokemonsInCache.indexOf(pokemon) === -1);
+      let count = this.state.total - pokemonIds.length;
+      console.log(count);
+      pokemonIds.map(pokemon => {
+        const pokeKey = pokemon;
+
+        localforage.getItem(pokeKey).then(value => {
+          if (value) {
+            count++;
+            this.setState({ synced: count });
+            return;
+          }
+
+          const pokeId = pokemon.replace('poke_', '');
+          superagent.get(URL.POKEMON + pokeId).then(res => {
+            localforage.setItem(pokeKey, res.body).then(value => {
+              count++;
+              this.setState({
+                synced: count
+              });
+            });
+          })
+        })
+      })
     });
   }
   componentDidMount() {
+    // return localforage.clear();
     localforage.getItem('pokemon').then(value => {
       let updateFlag = false;
       if (value) {
+        this.setState({
+          total: value.length
+        });
         this.loadPokemons(value);
         updateFlag = true;
+        // return;
       }
 
       superagent.get(URL.ALL_POKEMONS).then((res) => {
-        var myWorker = new Worker("worker.js");
-        myWorker.postMessage(res.body.results);
-        myWorker.onmessage = (e) => {
+        this.setState({
+          total: res.body.results.length
+        });
+        var worker = new Worker("worker.js");
+        worker.postMessage(res.body.results);
+        worker.onmessage = (e) => {
           this.loadPokemons(e.data, updateFlag);
           localforage.setItem('pokemon', e.data);
         }
@@ -69,17 +111,47 @@ export default class Poke extends React.Component {
     });
 
   }
+  loadPokemon(id) {
+    if (!id) return;
+    const pokeKey = 'poke_' + id;
+
+    localforage.getItem(pokeKey).then(value => {
+      let updateFlag = false;
+      if (value) {
+        console.log('from DB -> ', value);
+        this.setState({
+          pokeDetail: value,
+          detailOpen: true
+        });
+        updateFlag = true;
+      }
+
+      if (updateFlag) return;
+      superagent.get(URL.POKEMON + id).then(res => {
+        localforage.setItem(pokeKey, res.body).then(value => {
+          console.log('from api -> ', value);
+          this.setState({
+            pokemon: value,
+            detailOpen: true
+          });
+        });
+      })
+    });
+  }
   render() {
-    const {pokemons, detailOf, detailOpen} = this.state;
+    const {pokemons, pokeDetail, detailOpen, last, synced, total} = this.state;
     if (this.state.loading) return <Loader />
     return (
-      <ul className="poke-list">
-        {
-          pokemons.map(pokemon => <Pokemon pokemon={pokemon} onClick={this.pokemonSelected} key={pokemon.id} />)
-        }
-        <li className="load-more" onClick={this.loadMore}>show more</li>
-        <PokeDetails pokemon={detailOf} open={detailOpen} onClose={() => this.setState({ detailOpen: false })}/>
-      </ul>
+      <div className="poke-list-container">
+        <ul className="poke-list">
+          {
+            pokemons.map(pokemon => <Pokemon pokemon={pokemon} onClick={this.pokemonSelected} key={pokemon.id} />)
+          }
+          { (last < total) && <li className="load-more" onClick={this.loadMore}>show more</li>}
+        </ul>
+        { (synced < total) && (synced > 0) && <div className="notification">{synced}&nbsp;out of&nbsp;{total}&nbsp;pokemons synced</div>}
+        <PokeDetails pokemon={pokeDetail} open={detailOpen} onClose={() => this.setState({ detailOpen: false })}/>
+      </div>
     )
   }
 }
