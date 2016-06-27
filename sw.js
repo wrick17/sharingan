@@ -8,7 +8,7 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-var CACHE_NAME = 'v7';
+var CACHE_NAME = 'v8';
 var urlsToCache = [
   '/',
   '/dist/style.css',
