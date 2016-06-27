@@ -111,13 +111,13 @@ export default class Poke extends React.Component {
     });
 
   }
-  changeTitleColor(color) {
+  changeTitleColor(color, instant) {
     setTimeout(() => {
       const metas = document.getElementsByTagName('meta');
       metas['theme-color'].content = color;
       metas['apple-mobile-web-app-status-bar-style'].content = color;
       metas['msapplication-TileColor'].content = color;
-    }, 300);
+    }, instant ? 0 : 300);
   }
   loadPokemon(id) {
     if (!id) return;
@@ -152,7 +152,7 @@ export default class Poke extends React.Component {
   }
   closeDetails() {
     this.setState({ detailOpen: false }, () => {
-      this.changeTitleColor('#f44336');
+      this.changeTitleColor('#f44336',  true);
     });
   }
   render() {
