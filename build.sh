@@ -5,3 +5,4 @@ git commit -m "update build"
 git fetch
 git merge origin/master
 git push
+git push origin release
