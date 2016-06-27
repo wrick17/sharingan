@@ -112,10 +112,12 @@ export default class Poke extends React.Component {
 
   }
   changeTitleColor(color) {
-    const metas = document.getElementsByTagName('meta');
-    metas['theme-color'].content = color;
-    metas['apple-mobile-web-app-status-bar-style'].content = color;
-    metas['msapplication-TileColor'].content = color;
+    setTimeout(() => {
+      const metas = document.getElementsByTagName('meta');
+      metas['theme-color'].content = color;
+      metas['apple-mobile-web-app-status-bar-style'].content = color;
+      metas['msapplication-TileColor'].content = color;
+    }, 300);
   }
   loadPokemon(id) {
     if (!id) return;
