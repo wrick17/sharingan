@@ -1,6 +1,7 @@
 {
   "name": "Pokemons",
   "short_name": "Pokemons",
+  "start_url ": "/",
   "icons": [{
     "src": "images/icon-128x128.png",
       "sizes": "128x128",
