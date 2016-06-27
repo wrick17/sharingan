@@ -45,8 +45,10 @@
   0%, 30% {
     top: 50vh;
     left: 50vw;
-    height: 200vh;
-    width: 200vh;
+    height: 100vw;
+    min-height: 100vh;
+    width: 100vh;
+    min-width: 100vw;
     border-radius: 0;
     transform: translate(-50%, -50%);
   }
@@ -54,7 +56,9 @@
     top: 50vh;
     left: 50vw;
     height: @pokeball-big;
+    min-height: @pokeball-big;
     width: @pokeball-big;
+    min-width: @pokeball-big;
     border-radius: 50%;
     transform: translate(-50%, -50%);
   }
