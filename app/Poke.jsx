@@ -165,7 +165,7 @@ export default class Poke extends React.Component {
           { (last < total) && <li className="load-more" onClick={this.loadMore}>show more</li>}
         </ul>
         { (synced < total) && (synced > 0) && <div className="notification">{synced}&nbsp;out of&nbsp;{total}&nbsp;pokemons synced</div>}
-        <PokeDetails pokemon={pokeDetail} open={detailOpen} onClose={this.closeDetails()}/>
+        <PokeDetails pokemon={pokeDetail} open={detailOpen} onClose={this.closeDetails}/>
       </div>
     )
   }
