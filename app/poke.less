@@ -1,48 +1,22 @@
 @import "variables.less";
 
+.poke-list-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
 .poke-list {
+  position: relative;
   list-style: none;
   padding-left: 0;
-  padding-top: 55px;
+  padding-top: 10px;
+  flex: 1;
   display: flex;
 	flex-flow: row wrap;
 	justify-content: center;
-  margin-bottom: 0;
-}
-
-.pokemon {
-  @card-color: darken(@base, 2%);
-  margin: 5px;
-  min-height: 200px;
-  padding-bottom: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex: 0 0 190px;
-  max-width: 45%;
-  background: @card-color;
-  border-top: 1px solid lighten(@card-color, 15%);
-  border-left: 1px solid darken(@card-color, 3%);
-  border-right: 1px solid darken(@card-color, 3%);
-  border-bottom: 1px solid darken(@card-color, 15%);
-}
-
-.poke-img {
-  width: 100%;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  &:after {
-    content: "";
-    display: block;
-    padding-bottom: 100%;
-  }
-}
-
-.poke-name {
-  font-weight: bold;
-  text-transform: capitalize;
-  color: @alternate;
+  margin: 0;
+  overflow: auto;
 }
 
 .load-more {
@@ -57,4 +31,17 @@
   padding: 15px;
   margin-top: 10px;
   color: @base;
+}
+
+.notification {
+  display: flex;
+  justify-content: center;
+  padding: 5px;
+  background: @base;
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  border-top: 1px solid @primary;
+  box-shadow: 0 -1px 2px fade(@primary, 50%);
+  z-index: 1;
 }

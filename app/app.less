@@ -1,7 +1,7 @@
 @import "variables.less";
 
 * {
-  font-family: sans-serif;
+  font-family: 'Roboto', Helvetica, sans-serif, serif;
   box-sizing: border-box;
 }
 
@@ -9,9 +9,28 @@ body {
   margin: 0;
 }
 
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
 .poke {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  max-height: 100vh;
+  height: 100vh;
   background: @background;
+}
+
+.poke-img {
+  width: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  &:after {
+    content: "";
+    display: block;
+    padding-bottom: 100%;
+  }
 }
