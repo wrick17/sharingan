@@ -7,11 +7,10 @@ app.use(compression());
 app.use(express.static(path.join('./')));
 
 app.use (function (req, res, next) {
-  if (req.secure) {
-    next();
-  } else {
-    res.redirect('https://' + req.headers.host + req.url);
-  }
+  if(req.headers["x-forwarded-proto"] === "https"){
+    return next();
+  };
+  res.redirect('https://'+req.hostname+req.url);
 });
 
 app.get('/', function(req, res) {
