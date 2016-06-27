@@ -6,7 +6,7 @@ import localforage  from 'localforage'
 import Pokemon  from './Pokemon.jsx'
 import PokeDetails  from './PokeDetails.jsx'
 import Loader  from './components/Loader.jsx'
-import {URL} from './config.jsx'
+import {URL, COLORS} from './config.jsx'
 
 export default class Poke extends React.Component {
   constructor(props) {
@@ -16,6 +16,7 @@ export default class Poke extends React.Component {
     this.pokemonSelected = this.pokemonSelected.bind(this);
     this.scrapeData = this.scrapeData.bind(this);
     this.loadPokemon = this.loadPokemon.bind(this);
+    this.closeDetails = this.closeDetails.bind(this);
     this.state = {
       pokemons: [],
       loading: true,
@@ -110,8 +111,15 @@ export default class Poke extends React.Component {
     });
 
   }
+  changeTitleColor(color) {
+    const metas = document.getElementsByTagName('meta');
+    metas['theme-color'].content = color;
+    metas['apple-mobile-web-app-status-bar-style'].content = color;
+    metas['msapplication-TileColor'].content = color;
+  }
   loadPokemon(id) {
     if (!id) return;
+
     const pokeKey = 'poke_' + id;
 
     localforage.getItem(pokeKey).then(value => {
@@ -120,6 +128,9 @@ export default class Poke extends React.Component {
         this.setState({
           pokeDetail: value,
           detailOpen: true
+        }, () => {
+          console.log(value);
+          this.changeTitleColor(COLORS[value.types.filter(typeObj => typeObj.slot === 1)[0].type.name]);
         });
         updateFlag = true;
       }
@@ -130,9 +141,16 @@ export default class Poke extends React.Component {
           this.setState({
             pokemon: value,
             detailOpen: true
+          }, () => {
+            this.changeTitleColor(COLORS[value.types.filter(typeObj => typeObj.slot === 1)[0].type.name]);
           });
         });
       })
+    });
+  }
+  closeDetails() {
+    this.setState({ detailOpen: false }, () => {
+      this.changeTitleColor('#f44336');
     });
   }
   render() {
@@ -147,7 +165,7 @@ export default class Poke extends React.Component {
           { (last < total) && <li className="load-more" onClick={this.loadMore}>show more</li>}
         </ul>
         { (synced < total) && (synced > 0) && <div className="notification">{synced}&nbsp;out of&nbsp;{total}&nbsp;pokemons synced</div>}
-        <PokeDetails pokemon={pokeDetail} open={detailOpen} onClose={() => this.setState({ detailOpen: false })}/>
+        <PokeDetails pokemon={pokeDetail} open={detailOpen} onClose={this.closeDetails()}/>
       </div>
     )
   }
