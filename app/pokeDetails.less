@@ -24,7 +24,7 @@
   .pokemon-details {
     position: absolute;
     top: 100%;
-    height: 100%;
+    height: 100vh;
     width: 100%;
     background-color: @base;
     overflow: auto;
@@ -44,7 +44,6 @@
     border: none;
     .cross {
       margin-left: 5px;
-      font-size: 120%;
     }
   }
 
@@ -60,13 +59,15 @@
     align-items: center;
     margin: 0;
     padding: 15px;
-    box-shadow: 0 1px 2px fade(@alternate, 10%);
+    box-shadow: 0 1px 2px fade(@alternate, 40%);
+    z-index: 2;
   }
 
   .pokemon-name {
     padding: 0 10px;
-    font-weight: bold;
+    font-weight: 900;
     font-size: 16px;
+    color: @base;
     text-transform: uppercase;
   }
 
@@ -74,9 +75,17 @@
     display: flex;
   }
 
+  .pokemon-details-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding-top: 55px;
+  }
+
   .stats {
     display: flex;
     flex: 1;
+    flex-wrap: wrap;
     align-items: flex-start;
     justify-content: space-between;
     padding: 10px;
@@ -102,6 +111,61 @@
     font-size: 12px;
     margin-right: 5px;
     color: @base;
+  }
+
+  .stats-group {
+    flex: 1 0 100%;
+    margin-top: 10px;
+  }
+
+  .attributes {
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .sub-header {
+    margin: 0;
+    padding: 10px 20px;
+    text-transform: uppercase;
+    font-size: 14px;
+    color: @base;
+    flex: 0 0 100%;
+  }
+
+  .detial-group {
+    display: flex;
+    padding: 0 20px;
+    margin: 10px 0 0;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 14px;
+    flex: 1 0 160px;
+
+    dd {
+      margin-left: 10px;
+    }
+  }
+
+  .moves-container {
+    padding: 10px;
+  }
+
+  .moves {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 10px;
+  }
+
+  .move {
+    padding: 2px 5px;
+    border: 1px solid;
+    margin: 5px;
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: bold;
   }
 }
 

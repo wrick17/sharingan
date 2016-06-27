@@ -1,7 +1,7 @@
 const baseUrl = 'https://pokeapi.co/api/v2/';
 
 export const URL = {
-  ALL_POKEMONS: baseUrl + 'pokemon/', //?limit=1000
+  ALL_POKEMONS: baseUrl + 'pokemon/?limit=100', //?limit=1000
   POKEMON: baseUrl + 'pokemon/'
 }
 

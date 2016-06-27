@@ -5,7 +5,7 @@ import superagent from 'superagent'
 import localforage  from 'localforage'
 import Pokemon  from './Pokemon.jsx'
 import PokeDetails  from './PokeDetails.jsx'
-import Loader  from './Loader.jsx'
+import Loader  from './components/Loader.jsx'
 import {URL} from './config.jsx'
 
 export default class Poke extends React.Component {
@@ -60,7 +60,6 @@ export default class Poke extends React.Component {
       const pokemonsInCache = value;
       const pokemonIds = pokemons.map(pokemon => 'poke_'+pokemon.id).filter(pokemon => pokemonsInCache.indexOf(pokemon) === -1);
       let count = this.state.total - pokemonIds.length;
-      console.log(count);
       pokemonIds.map(pokemon => {
         const pokeKey = pokemon;
 
@@ -118,7 +117,6 @@ export default class Poke extends React.Component {
     localforage.getItem(pokeKey).then(value => {
       let updateFlag = false;
       if (value) {
-        console.log('from DB -> ', value);
         this.setState({
           pokeDetail: value,
           detailOpen: true
@@ -129,7 +127,6 @@ export default class Poke extends React.Component {
       if (updateFlag) return;
       superagent.get(URL.POKEMON + id).then(res => {
         localforage.setItem(pokeKey, res.body).then(value => {
-          console.log('from api -> ', value);
           this.setState({
             pokemon: value,
             detailOpen: true
