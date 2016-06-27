@@ -41,7 +41,7 @@ export default class Poke extends React.Component {
       last: (last + pageSize)
     });
 
-    requestIdleCallback(() => {
+    requestAnimationFrame(() => {
       this.scrapeData(pokemonsList);
     });
   }
@@ -128,11 +128,15 @@ export default class Poke extends React.Component {
       let updateFlag = false;
       if (value) {
         this.setState({
-          pokeDetail: value,
-          detailOpen: true
+          pokeDetail: value
         }, () => {
-          console.log(value);
-          this.changeTitleColor(COLORS[value.types.filter(typeObj => typeObj.slot === 1)[0].type.name]);
+          requestAnimationFrame(() => {
+            this.setState({
+              detailOpen: true
+            }, () => {
+              this.changeTitleColor(COLORS[value.types.filter(typeObj => typeObj.slot === 1)[0].type.name]);
+            });
+          })
         });
         updateFlag = true;
       }
@@ -141,10 +145,15 @@ export default class Poke extends React.Component {
       superagent.get(URL.POKEMON + id).then(res => {
         localforage.setItem(pokeKey, res.body).then(value => {
           this.setState({
-            pokemon: value,
-            detailOpen: true
+            pokeDetail: value
           }, () => {
-            this.changeTitleColor(COLORS[value.types.filter(typeObj => typeObj.slot === 1)[0].type.name]);
+            requestAnimationFrame(() => {
+              this.setState({
+                detailOpen: true
+              }, () => {
+                this.changeTitleColor(COLORS[value.types.filter(typeObj => typeObj.slot === 1)[0].type.name]);
+              });
+            })
           });
         });
       })
