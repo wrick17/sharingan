@@ -12,8 +12,7 @@ var CACHE_NAME = 'v21';
 var urlsToCache = [
   '/',
   '/dist/style.css',
-  '/dist/bundle.js',
-  '/worker.js'
+  '/dist/bundle.js'
 ];
 
 self.addEventListener('install', function(event) {
