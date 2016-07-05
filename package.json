@@ -1,6 +1,6 @@
 {
   "name": "sharingan",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "An app to discover the true powers of the sharingan",
   "main": "server.js",
   "scripts": {
@@ -40,6 +40,7 @@
     "compression": "^1.6.2",
     "express": "^4.14.0",
     "localforage": "^1.4.2",
+    "mongoose": "^4.5.3",
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
     "superagent": "^2.0.0"

@@ -1,8 +1,8 @@
-const baseUrl = 'https://pokeapi.co/api/v2/';
+const baseUrl = '/';
 
 export const URL = {
-  ALL_POKEMONS: baseUrl + 'pokemon/?limit=100', //?limit=1000
-  POKEMON: baseUrl + 'pokemon/'
+  POKEMONS: baseUrl + 'pokemons', //?limit=1000
+  POKEMON_DETAILS: baseUrl + 'pokemonDetails'
 }
 
 export const COLORS = {

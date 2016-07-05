@@ -40,10 +40,6 @@ export default class Poke extends React.Component {
       loading: false,
       last: (last + pageSize)
     });
-
-    requestAnimationFrame(() => {
-      this.scrapeData(pokemonsList);
-    });
   }
   loadMore() {
     localforage.getItem('pokemon').then(value => {
@@ -55,37 +51,16 @@ export default class Poke extends React.Component {
   pokemonSelected(pokemon) {
     this.loadPokemon(pokemon.id);
   }
-  scrapeData(pokemons) {
-    const totalPokemons = pokemons.length;
-    localforage.keys().then(value => {
-      const pokemonsInCache = value;
-      const pokemonIds = pokemons.map(pokemon => 'poke_'+pokemon.id).filter(pokemon => pokemonsInCache.indexOf(pokemon) === -1);
-      let count = this.state.total - pokemonIds.length;
-      pokemonIds.map(pokemon => {
-        const pokeKey = pokemon;
+  scrapeData() {
+    superagent.get(URL.POKEMON_DETAILS).then((res) => {
+      const pokemons = res.body;
 
-        localforage.getItem(pokeKey).then(value => {
-          if (value) {
-            count++;
-            this.setState({ synced: count });
-            return;
-          }
-
-          const pokeId = pokemon.replace('poke_', '');
-          superagent.get(URL.POKEMON + pokeId).then(res => {
-            localforage.setItem(pokeKey, res.body).then(value => {
-              count++;
-              this.setState({
-                synced: count
-              });
-            });
-          })
-        })
+      pokemons.forEach(pokemon => {
+        localforage.setItem(pokemon._id, pokemon);
       })
     });
   }
   componentDidMount() {
-    // return localforage.clear();
     localforage.getItem('pokemon').then(value => {
       let updateFlag = false;
       if (value) {
@@ -94,21 +69,19 @@ export default class Poke extends React.Component {
         });
         this.loadPokemons(value);
         updateFlag = true;
-        // return;
       }
 
-      superagent.get(URL.ALL_POKEMONS).then((res) => {
+      superagent.get(URL.POKEMONS).then((res) => {
+        const pokemons = res.body.pokemons;
         this.setState({
-          total: res.body.results.length
+          total: pokemons.length
         });
-        var worker = new Worker("worker.js");
-        worker.postMessage(res.body.results);
-        worker.onmessage = (e) => {
-          this.loadPokemons(e.data, updateFlag);
-          localforage.setItem('pokemon', e.data);
-        }
+        localforage.setItem('pokemon', pokemons);
+        this.loadPokemons(pokemons, updateFlag);
       })
     });
+
+    this.scrapeData();
 
   }
   changeTitleColor(color, instant) {
