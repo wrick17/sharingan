@@ -12,7 +12,7 @@ var pokemonDetails = [];
 var dbFlag = false;
 
 app.use (function (req, res, next) {
-  if(req.hostname == 'localhost' || req.headers["x-forwarded-proto"] === "https"){
+  if(req.headers["x-forwarded-proto"] === "https"){
     return next();
   };
   res.redirect('https://'+req.hostname+req.url);
