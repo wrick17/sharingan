@@ -1,4 +1,4 @@
-const baseUrl = '/';
+const baseUrl = 'https://pwa-pokemons.herokuapp.com/';
 
 export const URL = {
   POKEMONS: baseUrl + 'pokemons', //?limit=1000
