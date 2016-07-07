@@ -13,7 +13,6 @@ apiCalls.fetchPokemonList = function(callback) {
 
       return {
         id: id,
-        pokeId: 'poke_' + id,
         name: pokemon.name,
         image: 'https://pokeapi.co/media/sprites/pokemon/' + id + '.png'
       }
