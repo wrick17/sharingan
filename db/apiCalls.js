@@ -22,6 +22,8 @@ apiCalls.fetchPokemonList = function(callback) {
   })
 }
 
+// pokemon details
+
 apiCalls.fetchPokemonDetails = function(pokeId, callback) {
   function makeApiCall() {
     superagent.get('https://pokeapi.co/api/v2/pokemon/' + pokeId).end((err, res) => {
@@ -98,5 +100,93 @@ apiCalls.fetchPokemonDetails = function(pokeId, callback) {
 
   makeApiCall();
 }
+
+// abilities
+
+apiCalls.fetchAbilityList = function(callback) {
+  return superagent.get('https://pokeapi.co/api/v2/ability/?limit=10000').end(function(err, res) {
+
+    var abilityList = res.body.results.map(function(ability) {
+
+      var url = ability.url;
+      var match = /https:\/\/pokeapi.co\/api\/v2\/ability\/([0-9]{0,})+\//gi.exec(url);
+      var id = match[1];
+
+      return {
+        id: id,
+        name: ability.name
+      }
+    })
+
+    callback(abilityList);
+  })
+}
+
+apiCalls.fetchAbilityDetails = function(abilityId, callback) {
+  function makeApiCall() {
+    superagent.get('https://pokeapi.co/api/v2/ability/' + abilityId).end((err, res) => {
+      if (err) {
+        console.log('oops!', err);
+        makeApiCall();
+      }
+      var ability = res.body;
+
+      callback({
+        _id: 'ability_' + ability.id,
+        id: ability.id,
+        name: ability.name,
+        effect: ability.effect_entries[0] ? ability.effect_entries[0].effect : 'No Description'
+      });
+    })
+  }
+
+  makeApiCall();
+}
+
+// moves
+
+apiCalls.fetchMoveList = function(callback) {
+  return superagent.get('https://pokeapi.co/api/v2/move/?limit=10000').end(function(err, res) {
+
+    var moveList = res.body.results.map(function(move) {
+
+      var url = move.url;
+      var match = /https:\/\/pokeapi.co\/api\/v2\/move\/([0-9]{0,})+\//gi.exec(url);
+      var id = match[1];
+
+      return {
+        id: id,
+        name: move.name
+      }
+    })
+
+    callback(moveList);
+  })
+}
+
+apiCalls.fetchMoveDetails = function(moveId, callback) {
+  function makeApiCall() {
+    superagent.get('https://pokeapi.co/api/v2/move/' + moveId).end((err, res) => {
+      if (err) {
+        console.log('oops!', err);
+        makeApiCall();
+      }
+      var move = res.body;
+
+      callback({
+        _id: 'move_' + move.id,
+        id: move.id,
+        name: move.name,
+        effect: move.effect_entries[0] ? move.effect_entries[0].effect : 'No Description',
+        accuracy: move.accuracy,
+        type: move.type.name,
+        power: move.power
+      });
+    })
+  }
+
+  makeApiCall();
+}
+
 
 module.exports = apiCalls;

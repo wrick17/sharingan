@@ -20,8 +20,10 @@ export default class PokeDetails extends React.Component {
         <div className={classNames("pokemon-details", {'show': open})}>
 
           <h3 className="details-header" style={{backgroundColor: COLORS[type]}}>
-            <label className="pokemon-name">{pokemon.name}</label>
-            <button onClick={onClose} className="close-button"><span className="cross">✕</span></button>
+            <div className="wrapper">
+              <label className="pokemon-name">{pokemon.name}</label>
+              <button onClick={onClose} className="close-button"><span className="cross">✕</span></button>
+            </div>
           </h3>
 
           <div className="pokemon-details-container">

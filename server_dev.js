@@ -7,18 +7,11 @@ var compression = require('compression');
 var mongoose = require('mongoose');
 var controllerMethods = require('./db/controller.js');
 
-mongoose.connect('mongodb://admin:password@ds015325.mlab.com:15325/pokemons');
+mongoose.connect('mongodb://localhost/test');
 
 var pokemonList = [];
 var pokemonDetails = [];
 var dbFlag = false;
-
-app.use (function (req, res, next) {
-  if(req.headers["x-forwarded-proto"] === "https"){
-    return next();
-  };
-  res.redirect('https://'+req.hostname+req.url);
-});
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -30,7 +23,7 @@ app.use(compression());
 app.use(express.static(path.join('./')));
 
 app.get('/', function(req, res) {
-  res.sendFile(__dirname + '/index_prod.html');
+  res.sendFile(__dirname + '/index.html');
 });
 
 var db = mongoose.connection;

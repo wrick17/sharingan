@@ -54,13 +54,15 @@
   }
 
   .details-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 0;
     padding: 15px;
     box-shadow: 0 1px 2px fade(@alternate, 40%);
     z-index: 2;
+
+    .wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
   }
 
   .pokemon-name {
@@ -79,6 +81,8 @@
     display: flex;
     flex-direction: column;
     flex: 1;
+    max-width: @container;
+    margin: auto;
   }
 
   .stats {
