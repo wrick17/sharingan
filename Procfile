@@ -1,1 +1,1 @@
-web: forever stop server.js && forever start server.js
+web: forever stopall && forever start server.js
