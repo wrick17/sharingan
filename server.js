@@ -43,6 +43,7 @@ db.once('open', function() {
     console.log('pokemon ->', pokemonListData.length);
 
     controllerMethods.fetchPokemonDetails(pokemonListData, function(pokemonDetailsData) {})
+    controllerMethods.fetchPokemonDescription(pokemonListData, function(pokemonDescriptionData) {})
   });
 
   controllerMethods.fetchAbilityList(function(abilityListData) {
@@ -69,6 +70,14 @@ app.get('/pokemons', function(req, res) {
 app.get('/pokemonDetails', function(req, res) {
   controllerMethods.getPokemonDetails(function(pokemonDetails) {
     res.send(pokemonDetails);
+  });
+});
+
+// descriptions
+
+app.get('/pokemonDescriptions', function(req, res) {
+  controllerMethods.getPokemonDescriptions(function(pokemonDescriptions) {
+    res.send(pokemonDescriptions);
   });
 });
 
