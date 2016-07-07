@@ -29,7 +29,7 @@ apiCalls.fetchPokemonDetails = function(pokeId, callback) {
     superagent.get('https://pokeapi.co/api/v2/pokemon/' + pokeId).end((err, res) => {
       if (err) {
         console.log('oops!', err);
-        makeApiCall();
+        return makeApiCall();
       }
       var pokemon = res.body;
 
@@ -101,6 +101,44 @@ apiCalls.fetchPokemonDetails = function(pokeId, callback) {
   makeApiCall();
 }
 
+// description
+
+apiCalls.fetchPokemonDescription = function(pokeId, callback) {
+  let count = 1;
+  function makeApiCall() {
+    if (count > 1) {
+      return callback({
+        _id: 'desc_' + pokeId,
+        id: pokeId,
+        description: 'No description',
+        habitat: 'N/A' ,
+        growthRate: 'N/A',
+        happiness: 0,
+        captureRate: 0
+      });
+    }
+    superagent.get('https://pokeapi.co/api/v2/pokemon-species/' + pokeId).end((err, res) => {
+      if (err) {
+        count++;
+        return makeApiCall();
+      }
+      var pokemon = res ? res.body : {};
+
+      callback({
+        _id: 'desc_' + pokemon.id,
+        id: pokemon.id,
+        description: ((pokemon.flavor_text_entries || []).filter(flavour => (flavour.version.name === 'alpha-sapphire' || flavour.version.name === 'y') && flavour.language.name === 'en')[0] || {}).flavor_text || 'No Description',
+        habitat: pokemon.habitat ? pokemon.habitat.name : 'N/A' ,
+        growthRate: pokemon.growth_rate ? pokemon.growth_rate.name : 'N/A',
+        happiness: pokemon.base_happiness ? pokemon.base_happiness : 0,
+        captureRate: pokemon.capture_rate ? pokemon.capture_rate : 0
+      });
+    })
+  }
+
+  makeApiCall();
+}
+
 // abilities
 
 apiCalls.fetchAbilityList = function(callback) {
@@ -127,7 +165,7 @@ apiCalls.fetchAbilityDetails = function(abilityId, callback) {
     superagent.get('https://pokeapi.co/api/v2/ability/' + abilityId).end((err, res) => {
       if (err) {
         console.log('oops!', err);
-        makeApiCall();
+        return makeApiCall();
       }
       var ability = res.body;
 
@@ -169,7 +207,7 @@ apiCalls.fetchMoveDetails = function(moveId, callback) {
     superagent.get('https://pokeapi.co/api/v2/move/' + moveId).end((err, res) => {
       if (err) {
         console.log('oops!', err);
-        makeApiCall();
+        return makeApiCall();
       }
       var move = res.body;
 

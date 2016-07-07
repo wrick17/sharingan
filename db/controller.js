@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var apiCalls = require('./apiCalls.js');
-const {PokemonList, Pokemon, AbilityList, Ability, MoveList, Move} = require('./model.js');
+const {PokemonList, Pokemon, Description, AbilityList, Ability, MoveList, Move} = require('./model.js');
 
 var controllerMethods = {};
 
@@ -76,8 +76,51 @@ controllerMethods.getPokemonList = (callback = ()=>{}) => {
 }
 
 controllerMethods.getPokemonDetails = (callback = ()=>{}) => {
-  Pokemons.find(function(err, pokemons) {
+  Pokemon.find(function(err, pokemons) {
     callback(pokemons)
+  });
+}
+
+// description
+
+controllerMethods.fetchPokemonDescription = (descriptionList, callback = () => {}) => {
+
+  Description.find((err, descriptions) => {
+    if (descriptions.length === descriptionList.length) {
+      console.log('gone back');
+      return callback(descriptions);
+    }
+
+    var descriptionListIds = descriptionList.map(description => description.id);
+    var descriptionIds = descriptions.map(description => description.id);
+
+    var sortedList = descriptionListIds.filter(description => descriptionIds.indexOf(Number(description)) === -1);
+
+    var count = 1;
+    sortedList.forEach(descriptionId => {
+
+      function makeTheCall() {
+        if (count > 5) {
+          return setTimeout(makeTheCall, 1000);
+        }
+        count++;
+        apiCalls.fetchPokemonDescription( descriptionId, function (descriptionDetail) {
+          var description = new Description(descriptionDetail);
+          description.save(function(err, description) {
+            count--;
+            callback();
+          })
+        })
+      }
+      makeTheCall();
+    })
+
+  })
+}
+
+controllerMethods.getPokemonDescriptions = (callback = ()=>{}) => {
+  Description.find(function(err, descriptions) {
+    callback(descriptions)
   });
 }
 

@@ -7,10 +7,102 @@ import superagent from 'superagent'
 import {COLORS} from './config.jsx'
 import Statistic from './components/Statistic.jsx'
 
+class Ability extends React.Component {
+  constructor(props) {
+    super(props);
+    this.showAbility = this.showAbility.bind(this);
+    this.state = {
+      expanded: false,
+      ability: undefined
+    }
+  }
+  componentDidMount() {
+    localforage.getItem(this.props.abilityObj.ability.id).then(data => {
+      this.setState({ ability: data });
+    })
+  }
+  showAbility() {
+    this.setState({ expanded: !this.state.expanded });
+  }
+  render() {
+    const {abilityObj} = this.props;
+    const {expanded, ability} = this.state;
+    if (!ability) return null;
+    return (
+      <li className={classNames("move", {'expanded': expanded})}>
+        <div className="move-header" onClick={this.showAbility}>
+          <label className="move-title">{abilityObj.ability.name}</label>
+          <span className={classNames("move-icon", {'expanded': expanded})}>▷</span>
+        </div>
+        { expanded && <div className="move-description">{ability.effect}</div>}
+      </li>
+    )
+  }
+}
+
+class Move extends React.Component {
+  constructor(props) {
+    super(props);
+    this.showMove = this.showMove.bind(this);
+    this.state = {
+      expanded: false,
+      move: undefined
+    }
+  }
+  componentDidMount() {
+    localforage.getItem(this.props.moveObj.move.id).then(data => {
+      this.setState({ move: data });
+    })
+  }
+  showMove() {
+    this.setState({ expanded: !this.state.expanded });
+  }
+  render() {
+    const {moveObj} = this.props;
+    const {expanded, move} = this.state;
+    if (!move) return null;
+    return (
+      <li className={classNames("move", {'expanded': expanded})}>
+        <div className="move-header" onClick={this.showMove}>
+          <label className="move-title">{move.name}</label>
+          <span className="move-type" style={{backgroundColor: COLORS[move.type]}}>{move.type}</span>
+          <span className={classNames("move-icon", {'expanded': expanded})}>▷</span>
+        </div>
+        { expanded && <div className="move-description">
+          <div className="minor-details">
+            <div className="detail">
+              <label>Power:</label><span>{move.power}</span>
+            </div>
+            <div className="detail">
+              <label>Accuracy:</label><span>{move.accuracy}%</span>
+            </div>
+          </div>
+          <div>{move.effect}</div>
+        </div>}
+      </li>
+    )
+  }
+}
+
 export default class PokeDetails extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      description: undefined
+    }
+  }
+  componentWillReceiveProps(newProps) {
+    if (!newProps.pokemon) return;
+    localforage.getItem('desc_' + newProps.pokemon.id).then(data => {
+      this.setState({
+        description: data
+      })
+    })
+  }
   render() {
     const {pokemon, onClose, open} = this.props;
-    if (!pokemon) return null;
+    const {description} = this.state;
+    if (!pokemon || !description) return null;
 
     const type = pokemon.types.filter(type => type.slot === 1)[0].type.name;
     return (
@@ -48,6 +140,7 @@ export default class PokeDetails extends React.Component {
 
             <div className="attributes">
               <h3 className="sub-header" style={{backgroundColor: COLORS[type]}}>physical attributes</h3>
+              <p className="pokemon-description">{description.description}</p>
               <dl className="detial-group">
                 <dt>Height</dt>
                 <dd>{pokemon.height/10} m</dd>
@@ -60,13 +153,29 @@ export default class PokeDetails extends React.Component {
                 <dt>experience</dt>
                 <dd>{pokemon.base_experience} XP</dd>
               </dl>
+              <dl className="detial-group">
+                <dt>capture rate</dt>
+                <dd>{description.captureRate}</dd>
+              </dl>
+              <dl className="detial-group">
+                <dt>happiness</dt>
+                <dd>{description.happiness}</dd>
+              </dl>
+              <dl className="detial-group">
+                <dt>growth rate</dt>
+                <dd>{description.growthRate}</dd>
+              </dl>
+              <dl className="detial-group">
+                <dt>habitat</dt>
+                <dd>{description.habitat}</dd>
+              </dl>
             </div>
 
             <div className="moves-container">
               <h3 className="sub-header" style={{backgroundColor: COLORS[type]}}>abilities</h3>
               <ul className="moves">
                 {
-                  pokemon.abilities.map((abilityObj, key) => <li className="move" key={key} style={{borderColor: COLORS[type]}}>{abilityObj.ability.name}</li>)
+                  pokemon.abilities.map((abilityObj, key) => <Ability key={key} abilityObj={abilityObj} />)
                 }
               </ul>
             </div>
@@ -75,7 +184,7 @@ export default class PokeDetails extends React.Component {
               <h3 className="sub-header" style={{backgroundColor: COLORS[type]}}>Moves</h3>
               <ul className="moves">
                 {
-                  pokemon.moves.map((moveObj, key) => <li className="move" key={key} style={{borderColor: COLORS[type]}}>{moveObj.move.name}</li>)
+                  pokemon.moves.map((moveObj, key) => <Move key={key} moveObj={moveObj} />)
                 }
               </ul>
             </div>

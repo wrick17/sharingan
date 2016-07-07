@@ -59,8 +59,30 @@ export default class Poke extends React.Component {
         localforage.setItem(pokemon._id, pokemon);
       })
     });
+    superagent.get(URL.POKEMON_ABILITIES).then((res) => {
+      const abilities = res.body;
+
+      abilities.forEach(ability => {
+        localforage.setItem(ability._id, ability);
+      })
+    });
+    superagent.get(URL.POKEMON_MOVES).then((res) => {
+      const moves = res.body;
+
+      moves.forEach(move => {
+        localforage.setItem(move._id, move);
+      })
+    });
+    superagent.get(URL.POKEMON_DESCRIPTION).then((res) => {
+      const descriptions = res.body;
+
+      descriptions.forEach(description => {
+        localforage.setItem(description._id, description);
+      })
+    });
   }
   componentDidMount() {
+    // localforage.clear();
     localforage.getItem('pokemon').then(value => {
       let updateFlag = false;
       if (value) {
