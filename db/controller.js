@@ -19,6 +19,11 @@ controllerMethods.fetchPokemonList = (callback = () => {}) => {
       })
 
       pokemons.save(function(err, pokemons) {
+        if (err) {
+          return PokemonList.findOneAndUpdate({_id: 'pokemons'}, {pokemons: pokemonsList}, {new: true}, function(err, pokemons) {
+            callback(pokemons.pokemons)
+          })
+        }
         callback(pokemons.pokemons)
       })
     })

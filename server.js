@@ -40,7 +40,7 @@ db.once('open', function() {
   dbFlag = true;
 
   controllerMethods.fetchPokemonList(function(pokemonListData) {
-    console.log('pokemon list updated', pokemonListData.length);
+    console.log('pokemon list updated with total', pokemonListData.length);
 
     controllerMethods.fetchPokemonDetails(pokemonListData, function(pokemonDetailsData) {})
   });

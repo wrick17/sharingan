@@ -3,7 +3,7 @@ var superagent = require('superagent');
 var apiCalls = {};
 
 apiCalls.fetchPokemonList = function(callback) {
-  return superagent.get('https://pokeapi.co/api/v2/pokemon/?limit=100').end(function(err, res) {
+  return superagent.get('https://pokeapi.co/api/v2/pokemon/?limit=10000').end(function(err, res) {
 
     var pokemonsList = res.body.results.map(function(pokemon) {
 
