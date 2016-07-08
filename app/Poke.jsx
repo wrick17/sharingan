@@ -2,7 +2,6 @@ require('./poke.less');
 
 import React  from 'react'
 import superagent from 'superagent'
-import localforage  from 'localforage'
 import Pokemon  from './Pokemon.jsx'
 import PokeDetails  from './PokeDetails.jsx'
 import Loader  from './components/Loader.jsx'
@@ -22,6 +21,7 @@ export default class Poke extends React.Component {
       loading: true,
       total: 0,
       synced: 0,
+      assets: 4,
       last: 0,
       pokeDetail: undefined,
       detailOpen: false
@@ -42,47 +42,60 @@ export default class Poke extends React.Component {
     });
   }
   loadMore() {
-    localforage.getItem('pokemon').then(value => {
+    storage.get('pokemons').then(value => {
       if (value) {
         this.loadPokemons(value);
       }
     });
   }
   pokemonSelected(pokemon) {
+    if (this.state.synced <= this.state.assets) return;
     this.loadPokemon(pokemon.id);
   }
   scrapeData() {
     superagent.get(URL.POKEMON_DETAILS).then((res) => {
-      const pokemons = res.body;
-
-      pokemons.forEach(pokemon => {
-        localforage.setItem(pokemon._id, pokemon);
-      })
+      const pokemons = {};
+      res.body.forEach(pokemon => {
+        pokemons[pokemon._id] = pokemon;
+      });
+      storage.set(pokemons).then(() => this.setState({synced: this.state.synced + 1}))
     });
+
     superagent.get(URL.POKEMON_ABILITIES).then((res) => {
-      const abilities = res.body;
-
-      abilities.forEach(ability => {
-        localforage.setItem(ability._id, ability);
-      })
+      const abilities = {};
+      res.body.forEach(ability => {
+        abilities[ability._id] = ability;
+      });
+      storage.set(abilities).then(() => this.setState({synced: this.state.synced + 1}))
     });
+
     superagent.get(URL.POKEMON_MOVES).then((res) => {
-      const moves = res.body;
-
-      moves.forEach(move => {
-        localforage.setItem(move._id, move);
-      })
+      const moves = {};
+      res.body.forEach(move => {
+        moves[move._id] = move;
+      });
+      storage.set(moves).then(() => this.setState({synced: this.state.synced + 1}))
     });
+
     superagent.get(URL.POKEMON_DESCRIPTION).then((res) => {
-      const descriptions = res.body;
-
-      descriptions.forEach(description => {
-        localforage.setItem(description._id, description);
-      })
+      const descriptions = {};
+      res.body.forEach(description => {
+        descriptions[description._id] = description;
+      });
+      storage.set(descriptions).then(() => this.setState({synced: this.state.synced + 1}))
     });
+
+    const makeTheCall = () => {
+      if (this.state.synced < this.state.assets) {
+        return setTimeout(makeTheCall, 1000);
+      }
+      this.setState({synced: 5});
+    }
+    makeTheCall();
   }
   componentDidMount() {
-    localforage.getItem('pokemon').then(value => {
+    storage.clear();
+    storage.get('pokemons').then(value => {
       let updateFlag = false;
       if (value) {
         this.setState({
@@ -97,7 +110,7 @@ export default class Poke extends React.Component {
         this.setState({
           total: pokemons.length
         });
-        localforage.setItem('pokemon', pokemons);
+        storage.set('pokemons', pokemons);
         this.loadPokemons(pokemons, updateFlag);
       })
     });
@@ -118,7 +131,7 @@ export default class Poke extends React.Component {
 
     const pokeKey = 'poke_' + id;
 
-    localforage.getItem(pokeKey).then(value => {
+    storage.get(pokeKey).then(value => {
       let updateFlag = false;
       if (value) {
         this.setState({
@@ -137,7 +150,7 @@ export default class Poke extends React.Component {
 
       if (updateFlag) return;
       superagent.get(URL.POKEMON + id).then(res => {
-        localforage.setItem(pokeKey, res.body).then(value => {
+        storage.set(pokeKey, res.body).then(value => {
           this.setState({
             pokeDetail: value
           }, () => {
@@ -169,7 +182,7 @@ export default class Poke extends React.Component {
           }
           { (last < total) && <li className="load-more" onClick={this.loadMore}>show more</li>}
         </ul>
-        { (synced < total) && (synced > 0) && <div className="notification">{synced}&nbsp;out of&nbsp;{total}&nbsp;pokemons synced</div>}
+        { (synced <= this.state.assets) && <div className="notification">{synced}&nbsp;out of assets&nbsp;{this.state.assets}&nbsp;cached</div>}
         <PokeDetails pokemon={pokeDetail} open={detailOpen} onClose={this.closeDetails}/>
       </div>
     )

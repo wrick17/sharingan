@@ -2,7 +2,6 @@ require('./pokeDetails.less')
 
 import React from 'react'
 import classNames from 'classnames'
-import localforage from 'localforage'
 import superagent from 'superagent'
 import {COLORS} from './config.jsx'
 import Statistic from './components/Statistic.jsx'
@@ -17,7 +16,7 @@ class Ability extends React.Component {
     }
   }
   componentDidMount() {
-    localforage.getItem(this.props.abilityObj.ability.id).then(data => {
+    storage.get(this.props.abilityObj.ability.id).then(data => {
       this.setState({ ability: data });
     })
   }
@@ -50,7 +49,7 @@ class Move extends React.Component {
     }
   }
   componentDidMount() {
-    localforage.getItem(this.props.moveObj.move.id).then(data => {
+    storage.get(this.props.moveObj.move.id).then(data => {
       this.setState({ move: data });
     })
   }
@@ -93,7 +92,7 @@ export default class PokeDetails extends React.Component {
   }
   componentWillReceiveProps(newProps) {
     if (!newProps.pokemon) return;
-    localforage.getItem('desc_' + newProps.pokemon.id).then(data => {
+    storage.get('desc_' + newProps.pokemon.id).then(data => {
       this.setState({
         description: data
       })

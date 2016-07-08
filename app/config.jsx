@@ -2,7 +2,7 @@ const baseUrl = 'https://pwa-pokemons.herokuapp.com/';
 // const baseUrl = 'http://localhost:3002/';
 
 export const URL = {
-  POKEMONS: baseUrl + 'pokemons', //?limit=1000
+  POKEMONS: baseUrl + 'pokemons',
   POKEMON_DETAILS: baseUrl + 'pokemonDetails',
   POKEMON_DESCRIPTION: baseUrl + 'pokemonDescriptions',
   POKEMON_ABILITIES: baseUrl + 'abilityDetails',
