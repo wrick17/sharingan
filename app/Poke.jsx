@@ -82,7 +82,6 @@ export default class Poke extends React.Component {
     });
   }
   componentDidMount() {
-    // localforage.clear();
     localforage.getItem('pokemon').then(value => {
       let updateFlag = false;
       if (value) {

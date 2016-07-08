@@ -30,7 +30,7 @@ app.use(compression());
 app.use(express.static(path.join('./')));
 
 app.get('/', function(req, res) {
-  res.sendFile(__dirname + '/index_prod.html');
+  res.sendFile(__dirname + '/index.html');
 });
 
 var db = mongoose.connection;
