@@ -9,13 +9,57 @@
   width: 100%;
   background-color: @primary;
   color: @base;
-  padding: 15px;
   font-size: 18px;
   text-transform: uppercase;
   border-bottom: 1px solid darken(@primary, 15%);
+  padding: 0;
 
-  span {
-    margin-left: 10px;
+  .wrapper {
+    padding: 15px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .search {
+    display: flex;
+    border-bottom: 1px solid transparent;
+
+    &.show {
+      border-color: @base;
+
+      .search-box {
+        max-width: 150px;
+        transition: max-width 200ms;
+      }
+    }
+  }
+
+  .search-icon {
+    transform: rotate(315deg);
+    font-size: 20px;
+    display: block;
+  }
+
+  .search-box {
+    background: transparent;
+    border: none;
+    flex: 1 1 100%;
+    color: @base;
+    text-align: right;
+    max-width: 0;
+    font-size: inherit;
+    overflow: hidden;
+    outline: none;
+    transition: max-width 200ms;
+
+    &::selection {
+      color: @base;
+    }
+  }
+
+  .logo {
+    margin-right: 20px;
   }
 }
 

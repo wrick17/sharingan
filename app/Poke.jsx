@@ -27,6 +27,9 @@ export default class Poke extends React.Component {
       pokeDetail: undefined,
       detailOpen: false
     };
+    this.pokemonsCache = {
+      pokemons: []
+    }
   }
   loadPokemons(pokemonsList, updateFlag) {
     if (updateFlag) return;
@@ -39,8 +42,20 @@ export default class Poke extends React.Component {
     this.setState({
       pokemons: newListOfPokemons,
       loading: false,
-      last: (last + pageSize)
+      last: (last + pageSize),
+      total: pokemonsList.length
     });
+  }
+  componentWillReceiveProps(newProps) {
+    if (newProps.searchKey !== this.props.searchKey) {
+      const filteredPokemons = this.pokemonsCache.pokemons.filter(pokemon => pokemon.name.indexOf(newProps.searchKey) !== -1);
+      this.setState({
+        last: 0,
+        pokemons: []
+      }, () => {
+        this.loadPokemons(filteredPokemons)
+      })
+    }
   }
   loadMore() {
     storage.get('pokemons').then(value => {
@@ -132,6 +147,7 @@ export default class Poke extends React.Component {
     storage.get('pokemons').then(value => {
       let updateFlag = false;
       if (value) {
+        this.pokemonsCache.pokemons = value;
         this.setState({
           total: value.length
         });
@@ -145,6 +161,7 @@ export default class Poke extends React.Component {
           total: pokemons.length
         });
         storage.set('pokemons', pokemons);
+        this.pokemonsCache.pokemons = pokemons;
         this.loadPokemons(pokemons, updateFlag);
       })
     });
