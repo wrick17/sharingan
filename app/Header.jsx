@@ -29,7 +29,7 @@ export default class Header extends React.Component {
     this.props.onSearch && this.props.onSearch('');
   }
   setSearchKey(e) {
-    const searchKey = e.target.value;
+    const searchKey = e.target.value.toLowerCase();
     this.setState({
       searchKey: searchKey
     })
