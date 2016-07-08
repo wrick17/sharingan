@@ -100,12 +100,13 @@ export default class PokeDetails extends React.Component {
   }
   render() {
     const {pokemon, onClose, open} = this.props;
-    const {description} = this.state;
-    if (!pokemon || !description) return null;
+    let {description} = this.state;
+    if (!pokemon) return null;
+    if (!description) description = {};
 
     const type = pokemon.types.filter(type => type.slot === 1)[0].type.name;
     return (
-      <div className={classNames("pokemon-details-wrapper", {'show': open})}>
+      <div className={classNames("pokemon-details-wrapper", {'show': (open && this.state.description)})}>
         <div className="overlay"></div>
 
         <div className={classNames("pokemon-details", {'show': open})}>
