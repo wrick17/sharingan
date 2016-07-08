@@ -6,6 +6,7 @@ import Pokemon  from './Pokemon.jsx'
 import PokeDetails  from './PokeDetails.jsx'
 import Loader  from './components/Loader.jsx'
 import {URL, COLORS} from './config.jsx'
+import MD5 from './md5.jsx'
 
 export default class Poke extends React.Component {
   constructor(props) {
@@ -49,40 +50,74 @@ export default class Poke extends React.Component {
     });
   }
   pokemonSelected(pokemon) {
-    if (this.state.synced <= this.state.assets) return;
-    this.loadPokemon(pokemon.id);
+    storage.get(['pokemonsMD5', 'abilitiesMD5', 'movesMD5', 'descriptionsMD5']).then(value => {
+      if (value.indexOf(null) !== -1) return;
+      this.loadPokemon(pokemon.id);
+    })
   }
   scrapeData() {
     superagent.get(URL.POKEMON_DETAILS).then((res) => {
-      const pokemons = {};
-      res.body.forEach(pokemon => {
-        pokemons[pokemon._id] = pokemon;
-      });
-      storage.set(pokemons).then(() => this.setState({synced: this.state.synced + 1}))
+      storage.get('pokemonsMD5').then((data) => {
+        if (data && data === MD5(res.body.toString())) {
+          this.setState({synced: this.state.synced + 1})
+        }
+        else {
+          const pokemons = {};
+          res.body.forEach(pokemon => {
+            pokemons[pokemon._id] = pokemon;
+          });
+          storage.set(pokemons).then(() => this.setState({synced: this.state.synced + 1}))
+          storage.set('pokemonsMD5', MD5(res.body.toString()));
+        }
+      })
     });
 
     superagent.get(URL.POKEMON_ABILITIES).then((res) => {
-      const abilities = {};
-      res.body.forEach(ability => {
-        abilities[ability._id] = ability;
-      });
-      storage.set(abilities).then(() => this.setState({synced: this.state.synced + 1}))
+      storage.get('abilitiesMD5').then((data) => {
+        if (data && data === MD5(res.body.toString())) {
+          this.setState({synced: this.state.synced + 1})
+        }
+        else {
+          const abilities = {};
+          res.body.forEach(ability => {
+            abilities[ability._id] = ability;
+          });
+          storage.set(abilities).then(() => this.setState({synced: this.state.synced + 1}))
+          storage.set('abilitiesMD5', MD5(res.body.toString()));
+        }
+      })
     });
 
     superagent.get(URL.POKEMON_MOVES).then((res) => {
-      const moves = {};
-      res.body.forEach(move => {
-        moves[move._id] = move;
-      });
-      storage.set(moves).then(() => this.setState({synced: this.state.synced + 1}))
+      storage.get('movesMD5').then((data) => {
+        if (data && data === MD5(res.body.toString())) {
+          this.setState({synced: this.state.synced + 1})
+        }
+        else {
+          const moves = {};
+          res.body.forEach(move => {
+            moves[move._id] = move;
+          });
+          storage.set(moves).then(() => this.setState({synced: this.state.synced + 1}))
+          storage.set('movesMD5', MD5(res.body.toString()));
+        }
+      })
     });
 
     superagent.get(URL.POKEMON_DESCRIPTION).then((res) => {
-      const descriptions = {};
-      res.body.forEach(description => {
-        descriptions[description._id] = description;
-      });
-      storage.set(descriptions).then(() => this.setState({synced: this.state.synced + 1}))
+      storage.get('descriptionsMD5').then((data) => {
+        if (data && data === MD5(res.body.toString())) {
+          this.setState({synced: this.state.synced + 1})
+        }
+        else {
+          const descriptions = {};
+          res.body.forEach(description => {
+            descriptions[description._id] = description;
+          });
+          storage.set(descriptions).then(() => this.setState({synced: this.state.synced + 1}))
+          storage.set('descriptionsMD5', MD5(res.body.toString()));
+        }
+      })
     });
 
     const makeTheCall = () => {
@@ -94,7 +129,6 @@ export default class Poke extends React.Component {
     makeTheCall();
   }
   componentDidMount() {
-    storage.clear();
     storage.get('pokemons').then(value => {
       let updateFlag = false;
       if (value) {
@@ -132,7 +166,6 @@ export default class Poke extends React.Component {
     const pokeKey = 'poke_' + id;
 
     storage.get(pokeKey).then(value => {
-      let updateFlag = false;
       if (value) {
         this.setState({
           pokeDetail: value
@@ -145,25 +178,7 @@ export default class Poke extends React.Component {
             });
           })
         });
-        updateFlag = true;
       }
-
-      if (updateFlag) return;
-      superagent.get(URL.POKEMON + id).then(res => {
-        storage.set(pokeKey, res.body).then(value => {
-          this.setState({
-            pokeDetail: value
-          }, () => {
-            requestAnimationFrame(() => {
-              this.setState({
-                detailOpen: true
-              }, () => {
-                this.changeTitleColor(COLORS[value.types.filter(typeObj => typeObj.slot === 1)[0].type.name]);
-              });
-            })
-          });
-        });
-      })
     });
   }
   closeDetails() {

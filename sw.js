@@ -17,7 +17,8 @@ self.addEventListener("install", function(event) {
       return cache.addAll([
         '/',
         '/dist/style.css',
-        '/dist/bundle.js'
+        '/dist/bundle.js',
+        'dist/storage.js'
       ]);
     })
   );

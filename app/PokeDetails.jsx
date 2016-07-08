@@ -174,7 +174,7 @@ export default class PokeDetails extends React.Component {
               <h3 className="sub-header" style={{backgroundColor: COLORS[type]}}>abilities</h3>
               <ul className="moves">
                 {
-                  pokemon.abilities.map((abilityObj, key) => <Ability key={key} abilityObj={abilityObj} />)
+                  pokemon.abilities.map((abilityObj, key) => <Ability key={key+pokemon.id} abilityObj={abilityObj} />)
                 }
               </ul>
             </div>
@@ -183,7 +183,7 @@ export default class PokeDetails extends React.Component {
               <h3 className="sub-header" style={{backgroundColor: COLORS[type]}}>Moves</h3>
               <ul className="moves">
                 {
-                  pokemon.moves.map((moveObj, key) => <Move key={key} moveObj={moveObj} />)
+                  pokemon.moves.map((moveObj, key) => <Move key={key+pokemon.id} moveObj={moveObj} />)
                 }
               </ul>
             </div>
