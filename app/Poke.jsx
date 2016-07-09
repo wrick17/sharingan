@@ -14,7 +14,7 @@ export default class Poke extends React.Component {
     this.loadPokemons = this.loadPokemons.bind(this);
     this.loadMore = this.loadMore.bind(this);
     this.pokemonSelected = this.pokemonSelected.bind(this);
-    this.scrapeData = this.scrapeData.bind(this);
+    this.fetchData = this.fetchData.bind(this);
     this.loadPokemon = this.loadPokemon.bind(this);
     this.closeDetails = this.closeDetails.bind(this);
     this.state = {
@@ -71,7 +71,7 @@ export default class Poke extends React.Component {
       this.loadPokemon(pokemon.id);
     })
   }
-  scrapeData() {
+  fetchData() {
     superagent.get(URL.POKEMON_DETAILS).then((res) => {
       storage.get('pokemonsMD5').then((data) => {
         if (data && data === MD5(res.body.toString())) {
@@ -176,7 +176,7 @@ export default class Poke extends React.Component {
       }
     });
 
-    this.scrapeData();
+    this.fetchData();
 
   }
   changeTitleColor(color, instant) {
@@ -202,13 +202,11 @@ export default class Poke extends React.Component {
           pokeDetail: value[0],
           pokeDescription: value[1]
         }, () => {
-          requestAnimationFrame(() => {
-            this.setState({
-              detailOpen: true
-            }, () => {
-              this.changeTitleColor(COLORS[value[0].types.filter(typeObj => typeObj.slot === 1)[0].type.name]);
-            });
-          })
+          this.setState({
+            detailOpen: true
+          }, () => {
+            this.changeTitleColor(COLORS[value[0].types.filter(typeObj => typeObj.slot === 1)[0].type.name]);
+          });
         });
       }
     });

@@ -16,8 +16,10 @@ class Ability extends React.Component {
     }
   }
   componentDidMount() {
-    storage.get(this.props.abilityObj.ability.id).then(data => {
-      this.setState({ ability: data });
+    requestAnimationFrame(() => {
+      storage.get(this.props.abilityObj.ability.id).then(data => {
+        this.setState({ ability: data });
+      })
     })
   }
   showAbility() {
@@ -49,8 +51,10 @@ class Move extends React.Component {
     }
   }
   componentDidMount() {
-    storage.get(this.props.moveObj.move.id).then(data => {
-      this.setState({ move: data });
+    requestAnimationFrame(() => {
+      storage.get(this.props.moveObj.move.id).then(data => {
+        this.setState({ move: data });
+      })
     })
   }
   showMove() {
@@ -123,7 +127,7 @@ export default class PokeDetails extends React.Component {
             </div>
 
             <div className="attributes">
-              <h3 className="sub-header" style={{backgroundColor: COLORS[type]}}>physical attributes</h3>
+              <h3 className="sub-header" style={{backgroundColor: COLORS[type]}}>about</h3>
               <p className="pokemon-description">{description.description}</p>
               <dl className="detial-group">
                 <dt>Height</dt>
