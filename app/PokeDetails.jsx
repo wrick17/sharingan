@@ -84,29 +84,13 @@ class Move extends React.Component {
 }
 
 export default class PokeDetails extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      description: undefined
-    }
-  }
-  componentWillReceiveProps(newProps) {
-    if (!newProps.pokemon) return;
-    storage.get('desc_' + newProps.pokemon.id).then(data => {
-      this.setState({
-        description: data
-      })
-    })
-  }
   render() {
-    const {pokemon, onClose, open} = this.props;
-    let {description} = this.state;
-    if (!pokemon) return null;
-    if (!description) description = {};
+    const {pokemon, description, onClose, open} = this.props;
+    if (!pokemon || !description) return null;
 
     const type = pokemon.types.filter(type => type.slot === 1)[0].type.name;
     return (
-      <div className={classNames("pokemon-details-wrapper", {'show': (open && this.state.description)})}>
+      <div className={classNames("pokemon-details-wrapper", {'show': (open)})}>
         <div className="overlay"></div>
 
         <div className={classNames("pokemon-details", {'show': open})}>

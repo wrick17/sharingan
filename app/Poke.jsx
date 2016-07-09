@@ -22,9 +22,10 @@ export default class Poke extends React.Component {
       loading: true,
       total: 0,
       synced: 0,
-      assets: 4,
+      assets: 5,
       last: 0,
       pokeDetail: undefined,
+      pokeDescription: undefined,
       detailOpen: false
     };
     this.pokemonsCache = {
@@ -135,11 +136,30 @@ export default class Poke extends React.Component {
       })
     });
 
+    superagent.get(URL.POKEMONS).then((res) => {
+      storage.get('listMD5').then((data) => {
+        if (data && data === MD5(res.body.pokemons.toString())) {
+          this.setState({synced: this.state.synced + 1})
+        }
+        else {
+          const pokemons = res.body.pokemons;
+          this.setState({
+            total: pokemons.length,
+            synced: this.state.synced + 1
+          });
+          this.pokemonsCache.pokemons = pokemons;
+          storage.set('pokemons', pokemons);
+          storage.set('listMD5', res.body.pokemons.toString());
+          this.loadPokemons(pokemons, updateFlag);
+        }
+      })
+    });
+
     const makeTheCall = () => {
       if (this.state.synced < this.state.assets) {
         return setTimeout(makeTheCall, 1000);
       }
-      this.setState({synced: 5});
+      this.setState({synced: this.state.synced + 1});
     }
     makeTheCall();
   }
@@ -154,16 +174,6 @@ export default class Poke extends React.Component {
         this.loadPokemons(value);
         updateFlag = true;
       }
-
-      superagent.get(URL.POKEMONS).then((res) => {
-        const pokemons = res.body.pokemons;
-        this.setState({
-          total: pokemons.length
-        });
-        storage.set('pokemons', pokemons);
-        this.pokemonsCache.pokemons = pokemons;
-        this.loadPokemons(pokemons, updateFlag);
-      })
     });
 
     this.scrapeData();
@@ -181,17 +191,22 @@ export default class Poke extends React.Component {
     if (!id) return;
 
     const pokeKey = 'poke_' + id;
+    const descriptionKey = 'desc_' + id;
 
-    storage.get(pokeKey).then(value => {
+    const pokeDetail = storage.get(pokeKey);
+    const pokeDescription = storage.get(descriptionKey);
+
+    Promise.all([pokeDetail, pokeDescription]).then(value => {
       if (value) {
         this.setState({
-          pokeDetail: value
+          pokeDetail: value[0],
+          pokeDescription: value[1]
         }, () => {
           requestAnimationFrame(() => {
             this.setState({
               detailOpen: true
             }, () => {
-              this.changeTitleColor(COLORS[value.types.filter(typeObj => typeObj.slot === 1)[0].type.name]);
+              this.changeTitleColor(COLORS[value[0].types.filter(typeObj => typeObj.slot === 1)[0].type.name]);
             });
           })
         });
@@ -204,7 +219,7 @@ export default class Poke extends React.Component {
     });
   }
   render() {
-    const {pokemons, pokeDetail, detailOpen, last, synced, total} = this.state;
+    const {pokemons, pokeDetail, pokeDescription, detailOpen, last, synced, total} = this.state;
     if (this.state.loading) return <Loader />
     return (
       <div className="poke-list-container">
@@ -215,7 +230,7 @@ export default class Poke extends React.Component {
           { (last < total) && <li className="load-more" onClick={this.loadMore}>show more</li>}
         </ul>
         { (synced <= this.state.assets) && <div className="notification">{synced}&nbsp;out of assets&nbsp;{this.state.assets}&nbsp;cached</div>}
-        <PokeDetails pokemon={pokeDetail} open={detailOpen} onClose={this.closeDetails}/>
+        <PokeDetails pokemon={pokeDetail} description={pokeDescription} open={detailOpen} onClose={this.closeDetails}/>
       </div>
     )
   }

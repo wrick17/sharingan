@@ -1,16 +1,6 @@
 const mainCache = "dtc-cache";
 const fontCache = "dtc-font-cache";
 
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js').then(function(registration) {
-    // Registration was successful
-    console.log('ServiceWorker registration successful with scope: ',    registration.scope);
-  }).catch(function(err) {
-    // registration failed :(
-    console.log('ServiceWorker registration failed: ', err);
-  });
-}
-
 self.addEventListener("install", function(event) {
   event.waitUntil(
     caches.open(mainCache).then(function(cache) {
@@ -27,12 +17,12 @@ self.addEventListener("install", function(event) {
 self.addEventListener("fetch", function(event) {
   const requestURL = new URL(event.request.url);
 
-  if (/^(\/css\/|\/js\/)/.test(requestURL.pathname)) {
-    event.respondWith(returnFromCacheOrFetch(event.request, mainCache));
-  } else if (requestURL.hostname === "fonts.gstatic.com" || requestURL.hostname === "fonts.googleapis.com") {
+  if (requestURL.hostname === "fonts.gstatic.com" || requestURL.hostname === "fonts.googleapis.com") {
     event.respondWith(returnFromCacheOrFetch(event.request, fontCache));
   } else if (/^\/images.*\.(jpg|png)$/.test(requestURL.pathname)) {
     event.respondWith(returnWebpOrOriginal(event.request));
+  } else {
+    event.respondWith(returnFromCacheOrFetch(event.request, mainCache));
   }
 });
 
