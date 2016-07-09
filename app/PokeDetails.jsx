@@ -11,23 +11,15 @@ class Ability extends React.Component {
     super(props);
     this.showAbility = this.showAbility.bind(this);
     this.state = {
-      expanded: false,
-      ability: undefined
+      expanded: false
     }
-  }
-  componentDidMount() {
-    requestAnimationFrame(() => {
-      storage.get(this.props.abilityObj.ability.id).then(data => {
-        this.setState({ ability: data });
-      })
-    })
   }
   showAbility() {
     this.setState({ expanded: !this.state.expanded });
   }
   render() {
-    const {abilityObj} = this.props;
-    const {expanded, ability} = this.state;
+    const {ability} = this.props;
+    const {expanded} = this.state;
     if (!ability) return null;
     return (
       <li className={classNames("move", {'expanded': expanded})}>
@@ -46,23 +38,15 @@ class Move extends React.Component {
     super(props);
     this.showMove = this.showMove.bind(this);
     this.state = {
-      expanded: false,
-      move: undefined
+      expanded: false
     }
-  }
-  componentDidMount() {
-    requestAnimationFrame(() => {
-      storage.get(this.props.moveObj.move.id).then(data => {
-        this.setState({ move: data });
-      })
-    })
   }
   showMove() {
     this.setState({ expanded: !this.state.expanded });
   }
   render() {
-    const {moveObj} = this.props;
-    const {expanded, move} = this.state;
+    const {move} = this.props;
+    const {expanded} = this.state;
     if (!move) return null;
     return (
       <li className={classNames("move", {'expanded': expanded})}>
@@ -89,8 +73,8 @@ class Move extends React.Component {
 
 export default class PokeDetails extends React.Component {
   render() {
-    const {pokemon, description, onClose, open} = this.props;
-    if (!pokemon || !description) return null;
+    const {pokemon, description, moves, abilities, onClose, open} = this.props;
+    if (!pokemon || !description || !moves || !abilities) return null;
 
     const type = pokemon.types.filter(type => type.slot === 1)[0].type.name;
     return (
@@ -163,7 +147,7 @@ export default class PokeDetails extends React.Component {
               <h3 className="sub-header" style={{backgroundColor: COLORS[type]}}>abilities</h3>
               <ul className="moves">
                 {
-                  pokemon.abilities.map((abilityObj, key) => <Ability key={key+pokemon.id} abilityObj={abilityObj} />)
+                  abilities.map((abilityObj, key) => <Ability key={key+pokemon.id} abilityObj={abilityObj} />)
                 }
               </ul>
             </div>
@@ -172,7 +156,7 @@ export default class PokeDetails extends React.Component {
               <h3 className="sub-header" style={{backgroundColor: COLORS[type]}}>Moves</h3>
               <ul className="moves">
                 {
-                  pokemon.moves.map((moveObj, key) => <Move key={key+pokemon.id} moveObj={moveObj} />)
+                  moves.map((moveObj, key) => <Move key={key+pokemon.id} move={moveObj} />)
                 }
               </ul>
             </div>

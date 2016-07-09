@@ -26,6 +26,8 @@ export default class Poke extends React.Component {
       last: 0,
       pokeDetail: undefined,
       pokeDescription: undefined,
+      pokeMoves: undefined,
+      pokeAbilities: undefined,
       detailOpen: false
     };
     this.pokemonsCache = {
@@ -198,16 +200,26 @@ export default class Poke extends React.Component {
 
     Promise.all([pokeDetail, pokeDescription]).then(value => {
       if (value) {
-        this.setState({
-          pokeDetail: value[0],
-          pokeDescription: value[1]
-        }, () => {
+        const moves = value[0].moves;
+        const moveKeys = moves.map(move => move.move.id);
+        const abilities = value[0].abilities;
+        const abilityKeys = abilities.map(ability => ability.ability.id);
+        const movePromise = storage.get(moveKeys);
+        const abilityPromise = storage.get(abilityKeys);
+        Promise.all([movePromise, abilityPromise]).then(res => {
           this.setState({
-            detailOpen: true
+            pokeDetail: value[0],
+            pokeDescription: value[1],
+            pokeMoves: res[0],
+            pokeAbilities: res[1]
           }, () => {
-            this.changeTitleColor(COLORS[value[0].types.filter(typeObj => typeObj.slot === 1)[0].type.name]);
-          });
-        });
+            this.setState({
+              detailOpen: true
+            }, () => {
+              this.changeTitleColor(COLORS[value[0].types.filter(typeObj => typeObj.slot === 1)[0].type.name]);
+            });
+          })
+        })
       }
     });
   }
@@ -217,7 +229,7 @@ export default class Poke extends React.Component {
     });
   }
   render() {
-    const {pokemons, pokeDetail, pokeDescription, detailOpen, last, synced, total} = this.state;
+    const {pokemons, pokeDetail, pokeDescription, pokeMoves, pokeAbilities, detailOpen, last, synced, total} = this.state;
     if (this.state.loading) return <Loader />
     return (
       <div className="poke-list-container">
@@ -228,7 +240,7 @@ export default class Poke extends React.Component {
           { (last < total) && <li className="load-more" onClick={this.loadMore}>show more</li>}
         </ul>
         { (synced <= this.state.assets) && <div className="notification">{synced}&nbsp;out of assets&nbsp;{this.state.assets}&nbsp;cached</div>}
-        <PokeDetails pokemon={pokeDetail} description={pokeDescription} open={detailOpen} onClose={this.closeDetails}/>
+        <PokeDetails pokemon={pokeDetail} description={pokeDescription} open={detailOpen} moves={pokeMoves} abilities={pokeAbilities} onClose={this.closeDetails}/>
       </div>
     )
   }
