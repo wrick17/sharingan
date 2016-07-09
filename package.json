@@ -1,6 +1,6 @@
 {
   "name": "sharingan",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An app to discover the true powers of the sharingan",
   "main": "server.js",
   "scripts": {
