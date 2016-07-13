@@ -24,7 +24,7 @@ class Ability extends React.Component {
     return (
       <li className={classNames("move", {'expanded': expanded})}>
         <div className="move-header" onClick={this.showAbility}>
-          <label className="move-title">{abilityObj.ability.name}</label>
+          <label className="move-title">{ability.name}</label>
           <span className={classNames("move-icon", {'expanded': expanded})}>▷</span>
         </div>
         { expanded && <div className="move-description">{ability.effect}</div>}
@@ -147,7 +147,7 @@ export default class PokeDetails extends React.Component {
               <h3 className="sub-header" style={{backgroundColor: COLORS[type]}}>abilities</h3>
               <ul className="moves">
                 {
-                  abilities.map((abilityObj, key) => <Ability key={key+pokemon.id} abilityObj={abilityObj} />)
+                  abilities.map((abilityObj, key) => <Ability key={key+pokemon.id} ability={abilityObj} />)
                 }
               </ul>
             </div>
