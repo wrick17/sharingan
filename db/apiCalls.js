@@ -3,12 +3,8 @@ var fs = require('fs');
 var apiCalls = {};
 
 apiCalls.fetchPokemonList = function(callback) {
-  return superagent.get('https://pokeapi.co/api/v2/pokemon/?limit=10').end(function(err, res) {
-
-    function base64_encode(file) {
-      var bitmap = fs.readFileSync(file);
-      return new Buffer(bitmap).toString('base64');
-    }
+  console.log('here');
+  return superagent.get('https://pokeapi.co/api/v2/pokemon/?limit=1').end(function(err, res) {
 
     var pokemonsList = res.body.results.map(function(pokemon) {
 
@@ -16,34 +12,36 @@ apiCalls.fetchPokemonList = function(callback) {
       var match = /https:\/\/pokeapi.co\/api\/v2\/pokemon\/([0-9]{0,})+\//gi.exec(url);
       var id = match[1];
 
-      function makeApiCall(pokeId) {
-        var file = fs.createWriteStream("file.jpg");
-        superagent.get('https://pokeapi.co/media/sprites/pokemon/' + pokeId + '.png').end((err, res) => {
-          if (err) {
-            console.log('oops!', pokeId);
-            return makeApiCall(pokeId);
-          }
-          res.pipe(file);
-          console.log(pokeId);
-          file.on('finish', function() {
-            file.close(function() {
-              console.log(base64_encode(file));
-            });
-          });
-        })
-      }
-
-      makeApiCall(id);
-
       return {
         id: id,
         name: pokemon.name,
         image: 'https://pokeapi.co/media/sprites/pokemon/' + id + '.png'
       }
-    })
+    });
 
     callback(pokemonsList);
   })
+}
+
+// images
+
+apiCalls.fetchPokemonImage = function(pokeId, callback) {
+
+  function makeApiCall() {
+    superagent.get('https://pokeapi.co/media/sprites/pokemon/' + pokeId + '.png').end((err, res) => {
+      if (err) {
+        console.log('oops!', err);
+        return makeApiCall();
+      }
+
+      callback({
+        id: 'image_id' + pokeId,
+        image: "data:" + res.headers["content-type"] + ";base64," + new Buffer(res.body).toString('base64')
+      });
+    })
+  }
+
+  makeApiCall();
 }
 
 // pokemon details

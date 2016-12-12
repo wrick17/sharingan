@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var apiCalls = require('./apiCalls.js');
-const {PokemonList, Pokemon, Description, AbilityList, Ability, MoveList, Move} = require('./model.js');
+const {PokemonList, Pokemon, Description, AbilityList, Ability, MoveList, Move, Image} = require('./model.js');
 
 var controllerMethods = {};
 
@@ -31,6 +31,8 @@ controllerMethods.fetchPokemonList = (callback = () => {}) => {
     })
   })
 }
+
+// details
 
 controllerMethods.fetchPokemonDetails = (pokemonList, callback = () => {}) => {
 
@@ -121,6 +123,49 @@ controllerMethods.fetchPokemonDescription = (descriptionList, callback = () => {
 controllerMethods.getPokemonDescriptions = (callback = ()=>{}) => {
   Description.find(function(err, descriptions) {
     callback(descriptions)
+  });
+}
+
+// images
+
+controllerMethods.fetchPokemonImage = (imageList, callback = () => {}) => {
+
+  Image.find((err, images) => {
+    if (images.length === imageList.length) {
+      console.log('gone back');
+      return callback(images);
+    }
+
+    var imageListIds = imageList.map(image => image.id);
+    var imageIds = images.map(image => image.id);
+
+    var sortedList = imageListIds.filter(image => imageIds.indexOf(Number(image)) === -1);
+
+    var count = 1;
+    sortedList.forEach(imageId => {
+
+      function makeTheCall() {
+        if (count > 5) {
+          return setTimeout(makeTheCall, 1000);
+        }
+        count++;
+        apiCalls.fetchPokemonImage( imageId, function (imageDetail) {
+          var image = new Image(imageDetail);
+          image.save(function(err, image) {
+            count--;
+            callback();
+          })
+        })
+      }
+      makeTheCall();
+    })
+
+  })
+}
+
+controllerMethods.getPokemonImages = (callback = ()=>{}) => {
+  Image.find(function(err, images) {
+    callback(images)
   });
 }
 
