@@ -1,15 +1,39 @@
 var superagent = require('superagent');
-
+var fs = require('fs');
 var apiCalls = {};
 
 apiCalls.fetchPokemonList = function(callback) {
-  return superagent.get('https://pokeapi.co/api/v2/pokemon/?limit=10000').end(function(err, res) {
+  return superagent.get('https://pokeapi.co/api/v2/pokemon/?limit=10').end(function(err, res) {
+
+    function base64_encode(file) {
+      var bitmap = fs.readFileSync(file);
+      return new Buffer(bitmap).toString('base64');
+    }
 
     var pokemonsList = res.body.results.map(function(pokemon) {
 
       var url = pokemon.url;
       var match = /https:\/\/pokeapi.co\/api\/v2\/pokemon\/([0-9]{0,})+\//gi.exec(url);
       var id = match[1];
+
+      function makeApiCall(pokeId) {
+        var file = fs.createWriteStream("file.jpg");
+        superagent.get('https://pokeapi.co/media/sprites/pokemon/' + pokeId + '.png').end((err, res) => {
+          if (err) {
+            console.log('oops!', pokeId);
+            return makeApiCall(pokeId);
+          }
+          res.pipe(file);
+          console.log(pokeId);
+          file.on('finish', function() {
+            file.close(function() {
+              console.log(base64_encode(file));
+            });
+          });
+        })
+      }
+
+      makeApiCall(id);
 
       return {
         id: id,

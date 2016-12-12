@@ -139,6 +139,7 @@ export default class Poke extends React.Component {
     });
 
     superagent.get(URL.POKEMONS).then((res) => {
+      console.log('pokemons ----> ', res.body.pokemons);
       storage.get('listMD5').then((data) => {
         if (data && data === MD5(res.body.pokemons.toString())) {
           this.setState({synced: this.state.synced + 1})

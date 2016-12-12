@@ -7,7 +7,7 @@ var compression = require('compression');
 var mongoose = require('mongoose');
 var controllerMethods = require('./db/controller.js');
 
-mongoose.connect('mongodb://localhost/test');
+mongoose.connect('mongodb://admin:password@ds015325.mlab.com:15325/pokemons');
 
 var pokemonList = [];
 var pokemonDetails = [];
@@ -39,17 +39,17 @@ db.once('open', function() {
     controllerMethods.fetchPokemonDescription(pokemonListData, function(pokemonDescriptionData) {})
   });
 
-  controllerMethods.fetchAbilityList(function(abilityListData) {
-    console.log('ability ->', abilityListData.length);
-
-    controllerMethods.fetchAbilityDetails(abilityListData, function(abilityDetailsData) {})
-  });
-
-  controllerMethods.fetchMoveList(function(moveListData) {
-    console.log('move ->', moveListData.length);
-
-    controllerMethods.fetchMoveDetails(moveListData, function(moveDetailsData) {})
-  });
+  // controllerMethods.fetchAbilityList(function(abilityListData) {
+  //   console.log('ability ->', abilityListData.length);
+  //
+  //   controllerMethods.fetchAbilityDetails(abilityListData, function(abilityDetailsData) {})
+  // });
+  //
+  // controllerMethods.fetchMoveList(function(moveListData) {
+  //   console.log('move ->', moveListData.length);
+  //
+  //   controllerMethods.fetchMoveDetails(moveListData, function(moveDetailsData) {})
+  // });
 });
 
 // pokemons
