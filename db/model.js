@@ -30,13 +30,6 @@ const Pokemon = mongoose.model('Pokemon', PokemonSchema);
 
 // images
 
-const ImageListSchema = new mongoose.Schema({
-  _id: String,
-  images: Array
-})
-
-const ImageList = mongoose.model('ImageList', ImageListSchema);
-
 const ImageSchema = new mongoose.Schema({
   _id: String,
   id: String,
