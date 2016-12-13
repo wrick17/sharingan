@@ -1,9 +1,9 @@
 var superagent = require('superagent');
-
+var fs = require('fs');
 var apiCalls = {};
 
 apiCalls.fetchPokemonList = function(callback) {
-  return superagent.get('https://pokeapi.co/api/v2/pokemon/?limit=10000').end(function(err, res) {
+  return superagent.get('https://pokeapi.co/api/v2/pokemon/?limit=1000').end(function(err, res) {
 
     var pokemonsList = res.body.results.map(function(pokemon) {
 
@@ -16,10 +16,39 @@ apiCalls.fetchPokemonList = function(callback) {
         name: pokemon.name,
         image: 'https://pokeapi.co/media/sprites/pokemon/' + id + '.png'
       }
-    })
+    });
 
     callback(pokemonsList);
   })
+}
+
+// images
+
+apiCalls.fetchPokemonImage = function(pokeId, callback) {
+
+  function makeApiCall() {
+    superagent.get('https://pokeapi.co/media/sprites/pokemon/' + pokeId + '.png').end((err, res) => {
+      if (err) {
+        if (err.status !== 404) {
+          return makeApiCall();
+        }
+        callback({
+          _id: pokeId,
+          id: 'image_' + pokeId,
+          image: undefined
+        });
+        return console.log('oops!', pokeId);
+      }
+
+      callback({
+        _id: pokeId,
+        id: 'image_' + pokeId,
+        image: "data:" + res.headers["content-type"] + ";base64," + new Buffer(res.body).toString('base64')
+      });
+    })
+  }
+
+  makeApiCall();
 }
 
 // pokemon details
