@@ -42,6 +42,7 @@ db.once('open', function() {
   controllerMethods.fetchPokemonList(function(pokemonListData) {
     console.log('pokemon ->', pokemonListData.length);
 
+    controllerMethods.fetchPokemonImage(pokemonListData, function(pokemonImages) {})
     controllerMethods.fetchPokemonDetails(pokemonListData, function(pokemonDetailsData) {})
     controllerMethods.fetchPokemonDescription(pokemonListData, function(pokemonDescriptionData) {})
   });
@@ -70,6 +71,14 @@ app.get('/pokemons', function(req, res) {
 app.get('/pokemonDetails', function(req, res) {
   controllerMethods.getPokemonDetails(function(pokemonDetails) {
     res.send(pokemonDetails);
+  });
+});
+
+// images
+
+app.get('/images', function(req, res) {
+  controllerMethods.getPokemonImages(function(imagesList) {
+    res.json(imagesList);
   });
 });
 
