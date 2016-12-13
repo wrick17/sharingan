@@ -5,21 +5,42 @@ import classNames from 'classnames'
 import superagent from 'superagent'
 import {COLORS} from './config.jsx'
 import Statistic from './components/Statistic.jsx'
+import Loader  from './components/Loader.jsx'
+
+let keyCounter = 1;
 
 class Ability extends React.Component {
   constructor(props) {
     super(props);
     this.showAbility = this.showAbility.bind(this);
     this.state = {
+      ability: {},
       expanded: false
     }
   }
+  // componentWillReceiveProps(newProps) {
+  //   const ability = newProps.ability;
+  //   storage.get(ability).then((data) => {
+  //     this.setState({
+  //       ability: data
+  //     });
+  //   })
+  // }
+  componentDidMount() {
+    const ability = this.props.ability;
+    storage.get(ability).then((data) => {
+      this.setState({
+        ability: data
+      });
+    })
+  }
   showAbility() {
-    this.setState({ expanded: !this.state.expanded });
+    this.setState({
+      expanded: !this.state.expanded
+    });
   }
   render() {
-    const {ability} = this.props;
-    const {expanded} = this.state;
+    const {expanded, ability} = this.state;
     if (!ability) return null;
     return (
       <li className={classNames("move", {'expanded': expanded})}>
@@ -38,15 +59,31 @@ class Move extends React.Component {
     super(props);
     this.showMove = this.showMove.bind(this);
     this.state = {
+      move: {},
       expanded: false
     }
+  }
+  // componentWillReceiveProps(newProps) {
+  //   const move = newProps.move;
+  //   storage.get(move).then((data) => {
+  //     this.setState({
+  //       move: data
+  //     });
+  //   })
+  // }
+  componentDidMount() {
+    const move = this.props.move;
+    storage.get(move).then((data) => {
+      this.setState({
+        move: data
+      });
+    })
   }
   showMove() {
     this.setState({ expanded: !this.state.expanded });
   }
   render() {
-    const {move} = this.props;
-    const {expanded} = this.state;
+    const {expanded, move} = this.state;
     if (!move) return null;
     return (
       <li className={classNames("move", {'expanded': expanded})}>
@@ -72,11 +109,46 @@ class Move extends React.Component {
 }
 
 export default class PokeDetails extends React.Component {
-  render() {
-    const {pokemon, description, moves, abilities, onClose, open, image} = this.props;
-    let showAll = true;
-    if (!pokemon || !description || !moves || !abilities) showAll = false;
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      moves: [],
+      abilities: []
+    };
+  }
+
+  componentWillReceiveProps(newProps) {
+    const {moves, abilities, open} = newProps;
+    if (this.props.currentPokemon !== newProps.currentPokemon) {
+      setTimeout(() => {
+        console.log('choot');
+        this.setState({
+          moves,
+          abilities
+        })
+      }, 500);
+    }
+  }
+
+  makeid()
+  {
+      var text = "";
+      var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+      for( var i=0; i < 10; i++ )
+          text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+      return text;
+  }
+
+  render() {
+    const {pokemon, description, onClose, open, image} = this.props;
+    const {moves, abilities} = this.state;
+    // console.log(this.state);
+    let showAll = true;
+    // console.log(!pokemon, !description, !moves, moves.length < 1, !abilities, abilities.length < 1);
+    if (!pokemon || !description) showAll = false;
     let type;
     if(showAll) type = pokemon.types.filter(type => type.slot === 1)[0].type.name;
     return (
@@ -151,7 +223,9 @@ export default class PokeDetails extends React.Component {
                     <h3 className="sub-header" style={{backgroundColor: COLORS[type]}}>abilities</h3>
                     <ul className="moves">
                       {
-                        abilities.map((abilityObj, key) => <Ability key={key+pokemon.id} ability={abilityObj} />)
+                        abilities && abilities.length > 0 ?
+                        abilities.slice(0, 10).map((ability, key) => <Ability key={this.makeid()} ability={ability} />) :
+                        <Loader/>
                       }
                     </ul>
                   </div>
@@ -160,10 +234,13 @@ export default class PokeDetails extends React.Component {
                     <h3 className="sub-header" style={{backgroundColor: COLORS[type]}}>Moves</h3>
                     <ul className="moves">
                       {
-                        moves.map((moveObj, key) => <Move key={key+pokemon.id} move={moveObj} />)
+                        moves && moves.length > 0 ?
+                        moves.slice(0, 10).map((move, key) => <Move key={this.makeid()} move={move} />) :
+                        <Loader/>
                       }
                     </ul>
                   </div>
+
                 </div>
               </div>
           }
