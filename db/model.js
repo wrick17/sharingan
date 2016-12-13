@@ -28,6 +28,17 @@ const PokemonSchema = new mongoose.Schema({
 
 const Pokemon = mongoose.model('Pokemon', PokemonSchema);
 
+// images
+
+const ImageSchema = new mongoose.Schema({
+  _id: Number,
+  id: String,
+  image: String,
+})
+
+const Image = mongoose.model('Image', ImageSchema);
+
+
 // description
 
 const DescriptionSchema = new mongoose.Schema({
@@ -92,5 +103,6 @@ module.exports = {
   Ability,
   MoveList,
   Move,
+  Image,
   Description
 };

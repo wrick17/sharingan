@@ -24,6 +24,7 @@ export default class Poke extends React.Component {
       synced: 0,
       assets: 5,
       last: 0,
+      currentPokemon: 0,
       pokeDetail: undefined,
       pokeDescription: undefined,
       pokeMoves: undefined,
@@ -211,7 +212,8 @@ export default class Poke extends React.Component {
             pokeDetail: value[0],
             pokeDescription: value[1],
             pokeMoves: res[0],
-            pokeAbilities: res[1]
+            pokeAbilities: res[1],
+            currentPokemon: id
           }, () => {
             this.setState({
               detailOpen: true
@@ -229,7 +231,10 @@ export default class Poke extends React.Component {
     });
   }
   render() {
-    const {pokemons, pokeDetail, pokeDescription, pokeMoves, pokeAbilities, detailOpen, last, synced, total} = this.state;
+    const {pokemons, currentPokemon, pokeDetail, pokeDescription, pokeMoves, pokeAbilities, detailOpen, last, synced, total} = this.state;
+    let currentPokemonImage;
+    const currentPokemonArray = pokemons.filter(pokemon => pokemon.id === currentPokemon);
+    if (currentPokemonArray.length > 0) currentPokemonImage = currentPokemonArray[0].image;
     if (this.state.loading) return <Loader />
     return (
       <div className="poke-list-container">
@@ -240,7 +245,7 @@ export default class Poke extends React.Component {
           { (last < total) && <li className="load-more" onClick={this.loadMore}>show more</li>}
         </ul>
         { (synced <= this.state.assets) && <div className="notification">{synced}&nbsp;out of assets&nbsp;{this.state.assets}&nbsp;cached</div>}
-        <PokeDetails pokemon={pokeDetail} description={pokeDescription} open={detailOpen} moves={pokeMoves} abilities={pokeAbilities} onClose={this.closeDetails}/>
+        <PokeDetails pokemon={pokeDetail} image={currentPokemonImage} description={pokeDescription} open={detailOpen} moves={pokeMoves} abilities={pokeAbilities} onClose={this.closeDetails}/>
       </div>
     )
   }

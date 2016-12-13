@@ -24,7 +24,7 @@ class Ability extends React.Component {
     return (
       <li className={classNames("move", {'expanded': expanded})}>
         <div className="move-header" onClick={this.showAbility}>
-          <label className="move-title">{abilityObj.ability.name}</label>
+          <label className="move-title">{ability.name}</label>
           <span className={classNames("move-icon", {'expanded': expanded})}>▷</span>
         </div>
         { expanded && <div className="move-description">{ability.effect}</div>}
@@ -73,7 +73,7 @@ class Move extends React.Component {
 
 export default class PokeDetails extends React.Component {
   render() {
-    const {pokemon, description, moves, abilities, onClose, open} = this.props;
+    const {pokemon, description, moves, abilities, onClose, open, image} = this.props;
     if (!pokemon || !description || !moves || !abilities) return null;
 
     const type = pokemon.types.filter(type => type.slot === 1)[0].type.name;
@@ -93,7 +93,7 @@ export default class PokeDetails extends React.Component {
           <div className="pokemon-details-container">
 
             <div className="pokemon-important-info">
-              <div className="poke-img" style={{backgroundImage: 'url("'+'https://pokeapi.co/media/sprites/pokemon/' + pokemon.id + '.png'+'")'}} ></div>
+              <div className="poke-img" style={{backgroundImage: 'url(' + image + ')'}} ></div>
 
               <div className="stats">
                 <ul className="types">
@@ -147,7 +147,7 @@ export default class PokeDetails extends React.Component {
               <h3 className="sub-header" style={{backgroundColor: COLORS[type]}}>abilities</h3>
               <ul className="moves">
                 {
-                  abilities.map((abilityObj, key) => <Ability key={key+pokemon.id} abilityObj={abilityObj} />)
+                  abilities.map((abilityObj, key) => <Ability key={key+pokemon.id} ability={abilityObj} />)
                 }
               </ul>
             </div>
