@@ -10,9 +10,9 @@ controllerMethods.fetchPokemonList = (callback = () => {}) => {
 
   PokemonList.find({_id: 'pokemons'}, function(err, pokemonList) {
     if (pokemonList[0] && pokemonList[0].count && pokemonList[0].expiry > Date.now()) {
-      callback(pokemonList[0].pokemons);
+      return callback(pokemonList[0].pokemons);
     }
-    apiCalls.fetchPokemonList( function (pokemonsList) {
+    return apiCalls.fetchPokemonList( function (pokemonsList) {
       var pokemons = new PokemonList({
         _id: 'pokemons',
         count: pokemonsList.length,

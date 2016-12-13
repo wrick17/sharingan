@@ -22,7 +22,7 @@ export default class Poke extends React.Component {
       loading: true,
       total: 0,
       synced: 0,
-      assets: 5,
+      assets: 4,
       last: 0,
       currentPokemon: 0,
       pokeDetail: undefined,
@@ -153,7 +153,7 @@ export default class Poke extends React.Component {
           this.pokemonsCache.pokemons = pokemons;
           storage.set('pokemons', pokemons);
           storage.set('listMD5', res.body.pokemons.toString());
-          this.loadPokemons(pokemons, updateFlag);
+          this.loadPokemons(pokemons);
         }
       })
     });
