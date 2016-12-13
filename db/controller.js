@@ -128,20 +128,29 @@ controllerMethods.getPokemonDescriptions = (callback = ()=>{}) => {
 
 // images
 
-controllerMethods.fetchPokemonImage = (imageList, callback = () => {}) => {
+controllerMethods.fetchPokemonImage = (pokemonList, callback = () => {}) => {
 
   Image.find((err, images) => {
-    if (images.length === imageList.length) {
-      console.log('gone back');
-      return callback(images);
+    if (images.length === pokemonList.length) {
+      console.log(pokemonList[0].image);
+      if (pokemonList.length > 0 && pokemonList[0].image.includes('data:image')) {
+        console.log('images gone back earlier');
+        return callback(pokemonList);
+      }
+      console.log('images gone back');
+      return controllerMethods.setPokemonImages(pokemonList, images, function(latestPokemons) {
+        console.log('new images set');
+        callback(latestPokemons);
+      })
     }
 
-    var imageListIds = imageList.map(image => image.id);
-    var imageIds = images.map(image => image.id);
+    var pokemonListIds = pokemonList.map(pokemon => pokemon.id);
+    var imageIds = images.map(image => image._id);
 
-    var sortedList = imageListIds.filter(image => imageIds.indexOf(Number(image)) === -1);
+    var sortedList = pokemonListIds.filter(pokemonId => imageIds.indexOf(Number(pokemonId)) === -1);
 
     var count = 1;
+    var overallCount = 0;
     sortedList.forEach(imageId => {
 
       function makeTheCall() {
@@ -153,7 +162,16 @@ controllerMethods.fetchPokemonImage = (imageList, callback = () => {}) => {
           var image = new Image(imageDetail);
           image.save(function(err, image) {
             count--;
-            callback();
+            overallCount++;
+            console.log('le ye mila ---> ', imageId);
+            if (overallCount === pokemonList.length) {
+              controllerMethods.getPokemonImages(function(images) {
+                controllerMethods.setPokemonImages(pokemonList, images, function(latestPokemons) {
+                  console.log('le ho gaya');
+                  callback(latestPokemons);
+                })
+              })
+            }
           })
         })
       }
@@ -167,6 +185,36 @@ controllerMethods.getPokemonImages = (callback = ()=>{}) => {
   Image.find(function(err, images) {
     callback(images)
   });
+}
+
+controllerMethods.setPokemonImages = (pokemonList, images, callback = ()=>{}) => {
+  // if (!images || images.length < 1) return;
+  const imageList = {};
+  images.forEach(image => {
+    imageList[image._id] = image.image;
+  });
+
+  var newPokemonList = pokemonList.map(pokemon => Object.assign({}, pokemon, {
+    image: imageList[pokemon.id]
+  }));
+
+  var pokemons = new PokemonList({
+    _id: 'pokemons',
+    count: newPokemonList.length,
+    pokemons: newPokemonList,
+    expiry: (Date.now() + (30 * 24 * 3600 * 1000))
+  })
+
+  pokemons.save(function(err, pokemonsList) {
+    if (err) {
+      return PokemonList.findOneAndUpdate({_id: 'pokemons'}, {pokemons: newPokemonList, count: newPokemonList.length}, {}, function(err, pokemonsAll) {
+        console.log('new update');
+        callback(pokemonsAll.pokemons)
+      })
+    }
+    console.log('old update');
+    callback(pokemonsList.pokemons)
+  })
 }
 
 // abilities

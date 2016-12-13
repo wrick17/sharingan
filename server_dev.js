@@ -35,24 +35,22 @@ db.once('open', function() {
   controllerMethods.fetchPokemonList(function(pokemonListData) {
     console.log('pokemon ->', pokemonListData.length);
 
-    controllerMethods.fetchPokemonImage(pokemonListData, function(pokemonDetailsData) {
-      console.log('cool ---->', pokemonDetailsData);
-    })
-    // controllerMethods.fetchPokemonDetails(pokemonListData, function(pokemonDetailsData) {})
-    // controllerMethods.fetchPokemonDescription(pokemonListData, function(pokemonDescriptionData) {})
+    controllerMethods.fetchPokemonImage(pokemonListData, function(pokemonImages) {})
+    controllerMethods.fetchPokemonDetails(pokemonListData, function(pokemonDetailsData) {})
+    controllerMethods.fetchPokemonDescription(pokemonListData, function(pokemonDescriptionData) {})
   });
 
-  // controllerMethods.fetchAbilityList(function(abilityListData) {
-  //   console.log('ability ->', abilityListData.length);
-  //
-  //   controllerMethods.fetchAbilityDetails(abilityListData, function(abilityDetailsData) {})
-  // });
-  //
-  // controllerMethods.fetchMoveList(function(moveListData) {
-  //   console.log('move ->', moveListData.length);
-  //
-  //   controllerMethods.fetchMoveDetails(moveListData, function(moveDetailsData) {})
-  // });
+  controllerMethods.fetchAbilityList(function(abilityListData) {
+    console.log('ability ->', abilityListData.length);
+
+    controllerMethods.fetchAbilityDetails(abilityListData, function(abilityDetailsData) {})
+  });
+
+  controllerMethods.fetchMoveList(function(moveListData) {
+    console.log('move ->', moveListData.length);
+
+    controllerMethods.fetchMoveDetails(moveListData, function(moveDetailsData) {})
+  });
 });
 
 // pokemons

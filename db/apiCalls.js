@@ -3,8 +3,7 @@ var fs = require('fs');
 var apiCalls = {};
 
 apiCalls.fetchPokemonList = function(callback) {
-  console.log('here');
-  return superagent.get('https://pokeapi.co/api/v2/pokemon/?limit=1').end(function(err, res) {
+  return superagent.get('https://pokeapi.co/api/v2/pokemon/?limit=1000').end(function(err, res) {
 
     var pokemonsList = res.body.results.map(function(pokemon) {
 
@@ -30,12 +29,20 @@ apiCalls.fetchPokemonImage = function(pokeId, callback) {
   function makeApiCall() {
     superagent.get('https://pokeapi.co/media/sprites/pokemon/' + pokeId + '.png').end((err, res) => {
       if (err) {
-        console.log('oops!', err);
-        return makeApiCall();
+        if (err.status !== 404) {
+          return makeApiCall();
+        }
+        callback({
+          _id: pokeId,
+          id: 'image_' + pokeId,
+          image: undefined
+        });
+        return console.log('oops!', pokeId);
       }
 
       callback({
-        id: 'image_id' + pokeId,
+        _id: pokeId,
+        id: 'image_' + pokeId,
         image: "data:" + res.headers["content-type"] + ";base64," + new Buffer(res.body).toString('base64')
       });
     })

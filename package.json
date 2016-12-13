@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "webpack-dev-server --host 0.0.0.0 --progress --inline --hot",
-    "build": "SET NODE_ENV=production && webpack -p --config webpack.production.config.js",
+    "buildwin": "SET NODE_ENV=production && webpack -p --config webpack.production.config.js",
+    "build": "NODE_ENV=production webpack -p --config webpack.production.config.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

@@ -1,5 +1,5 @@
-const baseUrl = 'https://pwa-pokemons.herokuapp.com/';
-// const baseUrl = 'http://localhost:3002/';
+// const baseUrl = 'https://pwa-pokemons.herokuapp.com/';
+const baseUrl = 'http://localhost:3002/';
 
 export const URL = {
   POKEMONS: baseUrl + 'pokemons',
@@ -7,6 +7,7 @@ export const URL = {
   POKEMON_DESCRIPTION: baseUrl + 'pokemonDescriptions',
   POKEMON_ABILITIES: baseUrl + 'abilityDetails',
   POKEMON_MOVES: baseUrl + 'moveDetails',
+  POKEMON_IMAGES: baseUrl + 'images'
 }
 
 export const COLORS = {
