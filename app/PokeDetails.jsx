@@ -122,7 +122,6 @@ export default class PokeDetails extends React.Component {
     const {moves, abilities, open} = newProps;
     if (this.props.currentPokemon !== newProps.currentPokemon) {
       setTimeout(() => {
-        console.log('choot');
         this.setState({
           moves,
           abilities
@@ -133,13 +132,13 @@ export default class PokeDetails extends React.Component {
 
   makeid()
   {
-      var text = "";
-      var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-      for( var i=0; i < 10; i++ )
-          text += possible.charAt(Math.floor(Math.random() * possible.length));
+    for( var i=0; i < 10; i++ )
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
 
-      return text;
+    return text;
   }
 
   render() {
@@ -157,17 +156,17 @@ export default class PokeDetails extends React.Component {
         <div className={classNames("pokemon-details", {'show': open})}>
           {
             showAll &&
-              <div>
+            <div className="details-shell">
 
-                <h3 className="details-header" style={{backgroundColor: COLORS[type]}}>
-                  <div className="wrapper">
-                    <label className="pokemon-name">{pokemon.name}</label>
-                    <button onClick={onClose} className="close-button"><span className="cross">✕</span></button>
-                  </div>
-                </h3>
+              <h3 className="details-header" style={{backgroundColor: COLORS[type]}}>
+                <div className="wrapper">
+                  <label className="pokemon-name">{pokemon.name}</label>
+                  <button onClick={onClose} className="close-button"><span className="cross">✕</span></button>
+                </div>
+              </h3>
 
+              <div className="pokemon-details-shell">
                 <div className="pokemon-details-container">
-
                   <div className="pokemon-important-info">
                     <div className="poke-img" style={{backgroundImage: 'url(' + image + ')'}} ></div>
 
@@ -240,9 +239,9 @@ export default class PokeDetails extends React.Component {
                       }
                     </ul>
                   </div>
-
                 </div>
               </div>
+            </div>
           }
         </div>
       </div>

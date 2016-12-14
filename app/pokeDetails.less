@@ -49,6 +49,7 @@
     border: none;
     .cross {
       margin-left: 5px;
+      margin-right: 5px;
     }
   }
 
@@ -56,6 +57,12 @@
     width: 152px;
     height: 152px;
     flex: 0 0 152px;
+  }
+
+  .details-shell {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
   }
 
   .details-header {
@@ -89,6 +96,11 @@
     flex: 1;
     max-width: @container;
     margin: auto;
+  }
+
+  .pokemon-details-shell {
+    display: flex;
+    overflow: auto;
   }
 
   .stats {
@@ -184,6 +196,7 @@
     font-size: 12px;
     font-weight: bold;
     background: inherit;
+    cursor: pointer;
 
     &.expanded {
       margin-bottom: 5px;
