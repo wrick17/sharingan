@@ -68,10 +68,11 @@ export default class Poke extends React.Component {
       }
     });
   }
-  pokemonSelected(pokemon) {
+  pokemonSelected(id) {
     storage.get(['pokemonsMD5', 'abilitiesMD5', 'movesMD5', 'descriptionsMD5']).then(value => {
       if (value.indexOf(null) !== -1) return;
-      this.loadPokemon(pokemon.id);
+      this.loadPokemon(id);
+      window.location.href = '#/poke/' + id;
     })
   }
   fetchData() {
@@ -166,7 +167,25 @@ export default class Poke extends React.Component {
     }
     makeTheCall();
   }
+
+  checkHash() {
+    const hashArr = window.location.hash.split('/');
+    let selectedPokeId = hashArr[hashArr.length - 1];
+    if (selectedPokeId === "") selectedPokeId = 0;
+
+    if (selectedPokeId == 0)
+      this.closeDetails();
+    else
+      this.pokemonSelected(selectedPokeId);
+  }
+
   componentDidMount() {
+    window.addEventListener("hashchange", () => {
+      this.checkHash();
+    });
+
+    this.checkHash();
+
     storage.get('pokemons').then(value => {
       let updateFlag = false;
       if (value) {
@@ -176,6 +195,7 @@ export default class Poke extends React.Component {
         });
         this.loadPokemons(value);
         updateFlag = true;
+
       }
     });
 
@@ -224,15 +244,17 @@ export default class Poke extends React.Component {
     });
   }
   closeDetails() {
-    this.setState({ detailOpen: false }, () => {
+    window.location.href = '#';
+    this.setState({ detailOpen: false, currentPokemon: 0 }, () => {
       this.changeTitleColor('#f44336',  true);
     });
   }
   render() {
     const {pokemons, currentPokemon, pokeDetail, pokeDescription, pokeMoves, pokeAbilities, detailOpen, last, synced, total} = this.state;
     let currentPokemonImage;
-    const currentPokemonArray = pokemons.filter(pokemon => pokemon.id === currentPokemon);
+    const currentPokemonArray = pokemons.filter(pokemon => pokemon.id == currentPokemon);
     if (currentPokemonArray.length > 0) currentPokemonImage = currentPokemonArray[0].image;
+
     if (this.state.loading) return <Loader />
     return (
       <div className="poke-list-container">
@@ -243,7 +265,15 @@ export default class Poke extends React.Component {
           { (last < total) && <li className="load-more" onClick={this.loadMore}>show more</li>}
         </ul>
         { (synced <= this.state.assets) && <div className="notification">{synced}&nbsp;out of assets&nbsp;{this.state.assets}&nbsp;cached</div>}
-        <PokeDetails pokemon={pokeDetail} image={currentPokemonImage} currentPokemon={currentPokemon} description={pokeDescription} open={detailOpen} moves={pokeMoves} abilities={pokeAbilities} onClose={this.closeDetails}/>
+        <PokeDetails
+          pokemon={pokeDetail}
+          image={currentPokemonImage}
+          currentPokemon={currentPokemon}
+          description={pokeDescription}
+          open={detailOpen && Number(currentPokemon) != 0}
+          moves={pokeMoves}
+          abilities={pokeAbilities}
+          onClose={this.closeDetails}/>
       </div>
     )
   }

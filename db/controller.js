@@ -89,7 +89,7 @@ controllerMethods.fetchPokemonDescription = (descriptionList, callback = () => {
 
   Description.find((err, descriptions) => {
     if (descriptions.length === descriptionList.length) {
-      console.log('gone back');
+      console.log('descriptions gone back');
       return callback(descriptions);
     }
 
@@ -132,7 +132,6 @@ controllerMethods.fetchPokemonImage = (pokemonList, callback = () => {}) => {
 
   Image.find((err, images) => {
     if (images.length === pokemonList.length) {
-      console.log(pokemonList[0].image);
       if (pokemonList.length > 0 && pokemonList[0].image.includes('data:image')) {
         console.log('images gone back earlier');
         return callback(pokemonList);

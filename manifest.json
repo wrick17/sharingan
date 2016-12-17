@@ -1,9 +1,9 @@
 {
   "name": "Pokemons",
   "short_name": "Pokemons",
-  "start_url ": "/",
-  "icons": [{
-    "src": "images/icon-128x128.png",
+  "icons": [
+    {
+      "src": "images/icon-128x128.png",
       "sizes": "128x128",
       "type": "image/png"
     }, {
@@ -22,7 +22,9 @@
       "src": "images/icon-256x256.png",
       "sizes": "256x256",
       "type": "image/png"
-    }],
+    }
+  ],
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#f44336",
   "theme_color": "#f44336"

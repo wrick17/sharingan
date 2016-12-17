@@ -144,9 +144,7 @@ export default class PokeDetails extends React.Component {
   render() {
     const {pokemon, description, onClose, open, image} = this.props;
     const {moves, abilities} = this.state;
-    // console.log(this.state);
     let showAll = true;
-    // console.log(!pokemon, !description, !moves, moves.length < 1, !abilities, abilities.length < 1);
     if (!pokemon || !description) showAll = false;
     let type;
     if(showAll) type = pokemon.types.filter(type => type.slot === 1)[0].type.name;
@@ -156,19 +154,19 @@ export default class PokeDetails extends React.Component {
         <div className={classNames("pokemon-details", {'show': open})}>
           {
             showAll &&
-            <div className="details-shell">
+              <div className="details-shell">
 
-              <h3 className="details-header" style={{backgroundColor: COLORS[type]}}>
-                <div className="wrapper">
-                  <label className="pokemon-name">{pokemon.name}</label>
-                  <button onClick={onClose} className="close-button"><span className="cross">✕</span></button>
-                </div>
-              </h3>
+                <h3 className="details-header" style={{backgroundColor: COLORS[type]}}>
+                  <div className="wrapper">
+                    <label className="pokemon-name">{pokemon.name}</label>
+                    <button onClick={onClose} className="close-button"><span className="cross">✕</span></button>
+                  </div>
+                </h3>
 
-              <div className="pokemon-details-shell">
-                <div className="pokemon-details-container">
-                  <div className="pokemon-important-info">
-                    <div className="poke-img" style={{backgroundImage: 'url(' + image + ')'}} ></div>
+                <div className="pokemon-details-shell">
+                  <div className="pokemon-details-container">
+                    <div className="pokemon-important-info">
+                      <div className="poke-img" style={{backgroundImage: 'url(' + image + ')'}} ></div>
 
                     <div className="stats">
                       <ul className="types">
