@@ -22,7 +22,7 @@ app.use(function(req, res, next) {
 app.use(compression());
 app.use(express.static(path.join('./')));
 
-app.get('/*', function(req, res) {
+app.get('/', function(req, res) {
   res.sendFile(__dirname + '/index.html');
 });
 
